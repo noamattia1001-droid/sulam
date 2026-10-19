@@ -99,7 +99,7 @@ button.chip i{background:#25D366}
 .m-only{display:none}
 
 /* ---------- phone layout (no scroll animation) ---------- */
-@media (max-width: 760px){
+@media all{ /* gated by .m-static, set from JS for phones in any orientation */
   .m-static .m-only{display:block}.m-static .d-only{display:none}
   /* tabs: one category on screen at a time */
   .m-static body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
@@ -809,11 +809,11 @@ footer .brand{color:#fff}
   </div>
 </footer>
 
-<script>if (!matchMedia('(max-width: 760px)').matches) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');</script>
+<script>if (!matchMedia('(max-width: 760px), (pointer: coarse) and (max-height: 520px)').matches) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');</script>
 <script>
 (function(){
 // phones get a plain, fast page: no 3D, no pinned scroll scenes
-const STATIC = matchMedia('(max-width: 760px)').matches;
+const STATIC = matchMedia('(max-width: 760px), (pointer: coarse) and (max-height: 520px)').matches;
 if (STATIC) document.documentElement.classList.add('m-static', 'no-webgl');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || STATIC;
 if (STATIC) {

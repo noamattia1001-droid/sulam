@@ -1,0 +1,1221 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>סולם</title>
+<meta name="description" content="סולם: איש הטכנולוגיה של המועצה. דשבורדים, אתרים, אוטומציות ובוט וואטסאפ, במנוי חודשי אחד.">
+<link rel="icon" href="/assets/favicon.png">
+<meta property="og:title" content="סולם · טכנולוגיה, שלב אחרי שלב">
+<meta property="og:description" content="1,500 ₪ לחודש על כל הפיתוח. אתם משלמים רק על השרתים.">
+<meta property="og:image" content="/assets/sulam-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Heebo:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* Layout: a pinned 3D stage (phone floating on a ladder that bends as you scroll), then calm content sections climbing the same ladder. */
+/* Sulam brand colors (from the brand kit) */
+:root{
+  --sulam-navy:#0B2E59; --sulam-teal:#0E8C7F; --sulam-teal-light:#2DD4BF; --sulam-mint:#E6F7F5;
+  --sulam-bg:#F8FAFC; --sulam-text:#0F172A; --sulam-text-muted:#475569;
+  --sulam-gradient:linear-gradient(180deg,#2DD4BF,#0E8C7F);
+  --navy:var(--sulam-navy); --navy-deep:#061a35; --teal:var(--sulam-teal); --teal-light:var(--sulam-teal-light); --mint:var(--sulam-mint);
+  --bg:#FFFFFF; --surface:#FFFFFF; color-scheme:light; --fg:var(--sulam-text); --heading:var(--sulam-navy); --muted:var(--sulam-text-muted); --line:#DCE6EE; --accent:var(--sulam-teal); --accent-soft:var(--sulam-mint);
+  --display:'Fredoka', 'Heebo', 'Arial Hebrew', Arial, sans-serif;
+  --font:'Heebo', 'Arial Hebrew', 'Noto Sans Hebrew', Arial, sans-serif;
+  --step-0:clamp(1rem,.96rem + .2vw,1.125rem);
+  --step-1:clamp(1.25rem,1.1rem + .6vw,1.6rem);
+  --step-2:clamp(1.7rem,1.3rem + 1.6vw,2.6rem);
+  --step-3:clamp(2.4rem,1.6rem + 3.6vw,4.6rem);
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{direction:rtl;text-align:right;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:var(--step-0);line-height:1.6;margin:0}
+h1,h2,h3{text-wrap:balance;margin:0;line-height:1.1}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--teal-light);outline-offset:3px;border-radius:8px}
+.wrap{max-width:1120px;margin-inline:auto;padding-left:max(16px, env(safe-area-inset-left,0px));padding-right:max(16px, env(safe-area-inset-right,0px))}
+
+/* ---------- header ---------- */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:#fff}
+.top{position:fixed;top:env(safe-area-inset-top,0px);inset-inline:0;z-index:20;padding-block:10px;pointer-events:none;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid rgba(11,46,89,.08)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;text-decoration:none;pointer-events:auto}
+.brand svg{height:50px;width:auto;display:block}
+.band h2{color:var(--heading)}
+.avail h2{color:var(--navy)}
+.top .cta{pointer-events:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:700 1rem var(--font);border-radius:999px;padding:12px 22px;text-decoration:none;border:0;cursor:pointer;transition:transform .2s, background .2s}
+.btn:hover{transform:translateY(-2px)}
+.btn-light{background:#fff;color:var(--navy);border:1.5px solid #d5e0ea}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-teal:hover{background:#0b7a6f}
+.btn-ghost{background:transparent;color:var(--fg);border:1.5px solid var(--line)}
+
+/* ---------- the scroll stage ---------- */
+.stage{position:relative;height:620vh;background:#fff;color:var(--sulam-text)}
+.pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+#scene{position:absolute;inset:0;width:100%;height:100%;display:block}
+.pin::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(90% 70% at 25% 50%, rgba(45,212,191,.10), transparent 60%), linear-gradient(180deg, rgba(255,255,255,0) 70%, #fff 100%)}
+.chapters{position:absolute;inset:0;z-index:2;pointer-events:none}
+.w{display:inline-block;opacity:.0;transform:translateY(.5em);transition:opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i) * 45ms)}
+.chap.in .w{opacity:1;transform:none}
+.chips{position:absolute;inset:0;z-index:2;pointer-events:none}
+.chip{position:absolute;left:0;top:0;display:flex;align-items:center;gap:10px;white-space:nowrap;background:rgba(255,255,255,.92);border:1px solid #e1eaf2;border-radius:16px;padding:10px 14px;font-weight:700;color:var(--navy);font-size:.95rem;box-shadow:0 18px 40px -18px rgba(11,46,89,.35);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);will-change:transform,opacity}
+.chip i{width:30px;height:30px;border-radius:10px;background:var(--sulam-gradient);display:grid;place-items:center;color:#fff;font-style:normal;font-size:.9rem}
+.chip small{display:block;font-weight:400;color:var(--muted);font-size:.78rem}
+button.chip{font-family:var(--font);cursor:pointer;text-align:right;border:1.5px solid var(--teal);transition:background .2s,box-shadow .2s}
+button.chip:hover{background:#fff;box-shadow:0 18px 40px -12px rgba(14,140,127,.55)}
+button.chip.asked{border-color:#c8d6e2}
+button.chip i{background:#25D366}
+.chap{position:absolute;inset-inline-start:max(16px, env(safe-area-inset-right,0px), calc((100vw - 1240px)/2 + 16px));top:50%;width:min(600px, 44vw);
+  transform:translateY(-50%);will-change:opacity,transform}
+.chap .eyebrow{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem;color:var(--teal);letter-spacing:.04em;margin-bottom:14px}
+.chap .eyebrow i{font-style:normal;font-variant-numeric:tabular-nums;border:1.5px solid rgba(14,140,127,.35);background:var(--mint);border-radius:999px;padding:2px 10px}
+.chap h1{font-family:var(--display);font-size:clamp(2.8rem,1.6rem + 4.4vw,5.8rem);font-weight:700;letter-spacing:-.01em;line-height:1.02;color:var(--navy)}
+.chap h2{font-family:var(--display);font-size:clamp(2.3rem,1.3rem + 3.2vw,4.4rem);font-weight:700;line-height:1.05;color:var(--navy)}
+.chap p{font-size:clamp(1.2rem,1rem + .7vw,1.65rem);font-weight:400;color:#334155;margin:18px 0 0;max-width:30ch;line-height:1.5}
+.chap p strong{color:var(--navy);font-weight:800}
+.chap .slogan{color:var(--teal);font-weight:700}
+.chap .slogan + p{font-size:1.1rem;margin-top:10px}
+.chap .hero-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap;pointer-events:auto}
+.scroll-hint{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);z-index:3;font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:6px}
+.scroll-hint span{width:2px;height:34px;background:linear-gradient(var(--teal),transparent);animation:drip 1.8s infinite}
+@keyframes drip{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* rung counter on the far edge */
+.rungs{position:absolute;inset-inline-end:max(16px, env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%);z-index:3;display:flex;flex-direction:column-reverse;gap:12px}
+.rungs b{display:block;width:22px;height:4px;border-radius:4px;background:#dbe4ee;transition:background .3s,width .3s}
+.rungs b.on{background:var(--sulam-gradient);width:32px}
+.no-webgl #scene,.no-webgl .chips{display:none}
+.no-webgl .w{opacity:1;transform:none}
+.no-webgl .stage{height:auto}
+.no-webgl .pin{position:relative;height:auto;padding-block:120px 60px}
+.no-webgl .chap{position:relative;top:auto;transform:none!important;opacity:1!important;margin-block:40px}
+
+@media (max-width: 760px){
+  .stage{height:560vh}
+  .chap{inset-inline:max(16px, env(safe-area-inset-right,0px));width:auto;top:auto;bottom:calc(28px + env(safe-area-inset-bottom,0px));transform:none;
+    padding:18px;border-radius:20px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 20px 40px -28px rgba(11,46,89,.5)}
+  .chap h1{font-size:2.5rem}
+  .chap h2{font-size:2rem}
+  .chap p{font-size:1.05rem;max-width:none;margin-top:10px}
+  .scroll-hint{display:none}
+  .chip{font-size:.8rem;padding:8px 10px}
+  .chip i{width:24px;height:24px}
+  .rungs{top:calc(90px + env(safe-area-inset-top,0px));transform:none}
+}
+
+/* ---------- content sections ---------- */
+section.band{padding-block:clamp(72px,10vw,130px)}
+.kicker{font-weight:700;color:var(--accent);font-size:.92rem;letter-spacing:.05em;margin-bottom:12px}
+.band h2{font-family:var(--display);font-size:clamp(2rem,1.4rem + 2.2vw,3.2rem);font-weight:700}
+.lead{color:var(--muted);font-size:var(--step-1);font-weight:300;max-width:38ch;margin:14px 0 0}
+
+/* how it works: a ladder you climb */
+.climb{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(32px,6vw,90px);align-items:start}
+.climb-head{position:sticky;top:120px}
+.steps{list-style:none;margin:0;padding:0;position:relative;display:flex;flex-direction:column;gap:18px}
+.steps::before,.steps::after{content:"";position:absolute;top:0;bottom:0;width:4px;border-radius:4px;background:var(--line)}
+.steps::before{inset-inline-start:0}
+.steps::after{inset-inline-start:56px}
+.step{position:relative;padding:22px 84px 22px 0;padding-inline-start:84px;padding-inline-end:0;opacity:.5;transition:opacity .5s}
+.step::before{content:"";position:absolute;inset-inline-start:0;width:60px;top:50%;height:4px;border-radius:4px;background:var(--line);transition:background .5s}
+.step.lit{opacity:1}
+.step.lit::before{background:var(--accent)}
+.step .n{font-weight:900;font-size:.95rem;color:var(--accent);font-variant-numeric:tabular-nums}
+.step h3{font-size:var(--step-1);font-weight:800;margin-top:2px}
+.step p{margin:6px 0 0;color:var(--muted);max-width:44ch}
+
+/* availability: a 24-hour clock driven by scroll */
+.clock-stage{position:relative;height:260vh;background:linear-gradient(180deg,#fff,#f4fbfa)}
+.clock-pin{position:sticky;top:0;height:100vh;height:100svh;display:flex;align-items:center;overflow:hidden;padding-top:70px}
+.clock-wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,2fr);gap:clamp(16px,3vw,40px);align-items:center;width:100%}
+.clock-head h2{font-family:var(--display);font-size:clamp(2rem,1.4rem + 2.2vw,3.2rem);font-weight:700;color:var(--navy)}
+.clock{width:100%;height:auto;max-height:78vh;display:block;overflow:visible}
+.bub{direction:rtl;text-align:right;background:#fff;border:2px solid #0B2E59;border-radius:26px 26px 26px 8px;padding:16px 20px;font-family:var(--font);box-shadow:0 20px 40px -24px rgba(11,46,89,.45);display:flex;flex-direction:column;gap:2px;transform-origin:left center}
+.bub b{font-family:var(--display);font-size:38px;line-height:1;color:var(--navy);direction:ltr;text-align:right}
+.bub span{font-size:22px;color:#334155;line-height:1.35}
+.bub.teal{border-color:var(--teal);border-radius:8px 26px 26px 26px}
+.bub.teal b{color:var(--teal)}
+.callout .bub{opacity:.18;transform:scale(.92);transition:opacity .5s, transform .6s cubic-bezier(.2,1.4,.4,1)}
+.callout.on .bub{opacity:1;transform:none}
+.callout .arrow{transition:stroke-dashoffset .7s ease}
+.callout.on .arrow{stroke-dashoffset:0}
+.callout circle{opacity:.3;transition:opacity .4s}
+.callout.on circle{opacity:1}
+#dayarc{transition:stroke-dashoffset .12s linear}
+.clock-cards{display:none}
+@media (max-width: 860px){
+  .clock-stage{height:240vh}
+  .clock-wrap{grid-template-columns:minmax(0,1fr);gap:8px}
+  .clock-head .lead{display:none}
+  .clock{max-height:46vh}
+  .callout foreignObject{display:none}
+  .callout .arrow{display:none}
+  .clock-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .clock-cards .bub{opacity:.3;transition:opacity .4s, transform .5s;padding:12px 14px}
+  .clock-cards .bub.on{opacity:1}
+  .clock-cards .bub b{font-size:1.5rem}
+  .clock-cards .bub span{font-size:.9rem}
+}
+.no-cpin .clock-stage{height:auto}
+.no-cpin .clock-pin{position:relative;height:auto;padding-block:100px 60px}
+
+/* included: horizontal track pinned to scroll */
+.incl-stage{position:relative;height:300vh;background:var(--mint)}
+.incl-pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;flex-direction:column;justify-content:center;gap:clamp(20px,4vh,40px)}
+.incl-head{display:flex;justify-content:space-between;align-items:end;gap:20px;flex-wrap:wrap}
+.incl-head h2{font-family:var(--display);font-size:clamp(2rem,1.4rem + 2.2vw,3.2rem);font-weight:700;color:var(--navy);max-width:20ch}
+.incl-count{font-weight:900;color:var(--teal);font-variant-numeric:tabular-nums;font-size:1.1rem}
+.track{display:flex;gap:clamp(16px,2.5vw,32px);padding-inline:max(16px, calc((100vw - 1120px)/2 + 16px));will-change:transform}
+.slide{flex:none;width:min(84vw,560px);background:#fff;border-radius:32px;padding:clamp(18px,2.6vw,28px);box-shadow:0 30px 60px -40px rgba(11,46,89,.45);display:flex;flex-direction:column;gap:14px;transform:scale(var(--sc,1));transition:transform .2s}
+.slide .vis{height:clamp(150px,26vh,240px);border-radius:22px;overflow:hidden;position:relative;background:#f3f8fb}
+.slide h3{font-size:var(--step-1);font-weight:800;color:var(--navy)}
+.slide p{margin:0;color:var(--muted)}
+.slide .tag{align-self:flex-start;font-weight:700;font-size:.85rem;color:var(--teal);background:var(--mint);border-radius:999px;padding:3px 12px}
+/* mini visuals */
+.v-site{padding:14px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto 1fr;gap:10px}
+.v-site .bar{grid-column:1/-1;height:18px;border-radius:9px;background:#e3edf4;display:flex;gap:6px;align-items:center;padding-inline:8px}
+.v-site .bar i{width:8px;height:8px;border-radius:50%;background:#c4d3df}
+.v-site .ev{border-radius:14px;padding:10px;color:#fff;font-weight:700;font-size:.85rem;display:flex;align-items:flex-end;min-height:90px}
+.v-chat{background:#ECE5DD;padding:14px;display:flex;flex-direction:column;gap:8px;font-size:.85rem}
+.v-chat .m{max-width:78%;padding:7px 11px;border-radius:12px;background:#fff;align-self:flex-end;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.v-chat .m.me{background:#DCF8C6;align-self:flex-start}
+.v-dash{padding:16px;display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px}
+.v-dash .bars{display:flex;align-items:flex-end;gap:6px;height:100%}
+.v-dash .bars i{flex:1;border-radius:6px 6px 2px 2px;background:#bfe8e2}
+.v-dash .bars i:nth-child(5){background:var(--teal)}
+.v-dash ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:.8rem;align-content:start}
+.v-dash li{background:#fff;border-radius:10px;padding:6px 9px;border-inline-start:3px solid #f2a33a}
+.v-dash li b{display:block;font-size:.72rem;color:var(--muted);font-weight:500}
+.incl-progress{height:4px;border-radius:4px;background:rgba(11,46,89,.1);overflow:hidden}
+.incl-progress i{display:block;height:100%;width:100%;background:var(--sulam-gradient);background:linear-gradient(90deg,#0E8C7F,#2DD4BF);transform-origin:right;transform:scaleX(var(--pp,0))}
+
+/* price */
+.price2{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(32px,6vw,80px);align-items:center}
+.big-price{font-weight:900;font-size:clamp(4rem,2.4rem + 7vw,8.5rem);line-height:.9;letter-spacing:-.04em;font-variant-numeric:tabular-nums;background:linear-gradient(180deg,#0B2E59 30%,#0E8C7F);-webkit-background-clip:text;background-clip:text;color:transparent;display:flex;align-items:baseline;gap:.15em}
+.big-price small{font-size:.28em;letter-spacing:0;font-weight:700;-webkit-text-fill-color:var(--muted)}
+.price-sub{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.price-sub span{font-weight:700;font-size:.92rem;color:var(--navy);background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:5px 14px}
+.price-sub span:first-child{background:var(--navy);color:#fff;border-color:var(--navy)}
+.addon{border-radius:28px;background:var(--navy);color:#fff;padding:clamp(22px,3.5vw,36px);position:relative;overflow:hidden}
+.addon::before{content:"";position:absolute;inset:auto -30% -60% auto;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(45,212,191,.35),transparent 70%)}
+.addon .k{color:var(--teal-light);font-weight:700;font-size:.9rem}
+.addon .range{font-size:clamp(2rem,1.5rem + 2vw,3rem);font-weight:900;margin-top:6px;font-variant-numeric:tabular-nums;line-height:1.1}
+.addon .range em{font-style:normal;color:var(--teal-light)}
+.addon p{color:#c9d8ea;margin:12px 0 0;position:relative}
+.addon .btn{margin-top:22px;position:relative}
+.marquee{margin-top:clamp(56px,7vw,90px);display:grid;gap:14px;direction:ltr;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);overflow:hidden}
+.mrow{display:flex;gap:14px;width:max-content;animation:flow 46s linear infinite}
+.mrow.rev{animation-direction:reverse;animation-duration:52s}
+.marquee:hover .mrow{animation-play-state:paused}
+.mrow span{direction:rtl;white-space:nowrap;font-weight:700;font-size:1.05rem;color:var(--navy);background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:12px 20px;display:flex;align-items:center;gap:10px}
+.mrow span::before{content:"";width:10px;height:10px;border-radius:3px;background:var(--teal);transform:rotate(45deg)}
+.mrow.rev span{background:var(--mint);border-color:transparent}
+@keyframes flow{to{transform:translateX(-50%)}}
+.terms2{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:40px;color:var(--muted);font-size:.95rem}
+.terms2 b{color:var(--navy)}
+@media (max-width: 860px){
+  .price2{grid-template-columns:minmax(0,1fr)}
+  .call-box{max-width:170px}.call span{font-size:.82rem}.call b{font-size:1.25rem}
+  .call.down{height:120px}
+  .day-lbl{font-size:.78rem;padding-inline:6px}
+}
+@media (prefers-reduced-motion: reduce){
+  .mrow{animation:none}.day-fill{transition:none}.day-fill::after{animation:none}
+}
+.no-hpin .incl-stage{height:auto}
+.no-hpin .incl-pin{position:relative;height:auto;padding-block:80px}
+.no-hpin .track{overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px}
+.no-hpin .slide{scroll-snap-align:center}
+
+
+/* header actions + accessibility */
+.top-actions{display:flex;gap:10px;align-items:center;pointer-events:auto}
+.a11y-btn{display:inline-flex;align-items:center;gap:8px;font:700 .95rem var(--font);color:var(--navy);background:#fff;border:1.5px solid #d5e0ea;border-radius:999px;padding:10px 14px;cursor:pointer}
+.a11y-btn svg{width:22px;height:22px}
+.a11y-panel{position:fixed;z-index:40;top:calc(84px + env(safe-area-inset-top,0px));inset-inline-end:max(16px, env(safe-area-inset-left,0px));width:min(340px, calc(100vw - 32px));background:#fff;border:1px solid var(--line);border-radius:22px;box-shadow:0 30px 60px -30px rgba(11,46,89,.5);padding:18px}
+.a11y-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;color:var(--navy);font-size:1.1rem}
+.x{border:0;background:var(--mint);color:var(--navy);width:34px;height:34px;border-radius:50%;font-size:1.3rem;cursor:pointer}
+.a11y-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.a11y-grid button{font:600 .92rem var(--font);color:var(--navy);background:#f3f7fa;border:1.5px solid transparent;border-radius:14px;padding:12px 8px;cursor:pointer}
+.a11y-grid button[aria-pressed="true"]{border-color:var(--teal);background:var(--mint)}
+.a11y-foot{display:flex;justify-content:space-between;margin-top:12px}
+.link{font:inherit;background:none;border:0;padding:0;color:var(--teal);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+footer .link{color:#cfe0f0}
+.foot-links{display:flex;gap:18px;flex-wrap:wrap}
+.full-row{grid-column:1/-1;margin:0}
+html.a-contrast{--muted:#1e293b;--line:#0B2E59}
+html.a-contrast body{color:#000}
+html.a-contrast .chap p,html.a-contrast .lead{color:#0f172a}
+html.a-links a,html.a-links .link{text-decoration:underline!important;text-decoration-thickness:2px!important;outline:2px dashed var(--teal);outline-offset:2px}
+html.a-readable body,html.a-readable .chap h1,html.a-readable .chap h2,html.a-readable .band h2{font-family:Arial,'Arial Hebrew',sans-serif!important;letter-spacing:.01em}
+html.a-still *{animation:none!important;transition:none!important}
+dialog.doc{border:0;border-radius:26px;padding:clamp(20px,3vw,34px);width:min(640px, calc(100vw - 32px));max-height:85vh;color:var(--fg);background:#fff;direction:rtl;text-align:right;box-shadow:0 40px 80px -30px rgba(11,46,89,.6)}
+dialog.doc.wide{width:min(1000px, calc(100vw - 32px))}
+dialog.doc::backdrop{background:rgba(11,46,89,.45);backdrop-filter:blur(3px)}
+dialog.doc h2{font-family:var(--display);color:var(--navy);font-size:1.9rem;margin-bottom:10px}
+dialog.doc h3{color:var(--navy);margin:18px 0 6px;font-size:1.15rem}
+dialog.doc ul{padding-inline-start:20px;display:grid;gap:6px}
+dialog.doc form{margin-top:18px}
+.leads-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.leads-wrap{overflow-x:auto;margin-top:12px}
+table.leads{width:100%;border-collapse:collapse;font-size:.95rem}
+.leads th{text-align:right;color:var(--muted);font-weight:600;padding:8px;border-bottom:2px solid var(--line);white-space:nowrap}
+.leads td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.leads td.ph{direction:ltr;text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.leads .wa{display:inline-flex;align-items:center;gap:6px;background:#25D366;color:#fff;font-weight:700;border-radius:999px;padding:6px 12px;text-decoration:none;white-space:nowrap}
+.leads .empty{color:var(--muted);text-align:center;padding:28px}
+@media (max-width:560px){ .a11y-btn span{display:none} .top .cta{padding:10px 16px} }
+
+
+/* full price list dialog */
+.prices .pl-intro{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center;background:var(--mint);border-radius:20px;padding:18px;margin:10px 0 8px}
+.pl-sub{display:flex;flex-direction:column}
+.pl-sub b{font-family:var(--display);font-size:2.4rem;color:var(--navy);line-height:1}
+.pl-sub span{color:var(--muted);font-size:.85rem}
+.prices .pl-intro p{margin:0}
+.prices .dots{padding-inline-start:20px}
+.group{border-top:2px solid var(--navy);padding-top:4px;margin-top:22px}
+.g-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:8px}
+.g-title h3{margin:0!important;font-size:1.15rem}
+.g-title span{color:var(--muted);font-size:.88rem}
+.row{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,1fr) auto;gap:6px 20px;align-items:baseline;padding-block:11px;border-top:1px solid var(--line)}
+.row b{font-weight:700}
+.row p{margin:0;color:var(--muted)}
+.row em{font-style:normal;font-weight:800;color:var(--teal);white-space:nowrap;font-variant-numeric:tabular-nums}
+.row em small{font-weight:500;font-size:.78rem;color:var(--muted)}
+.extras{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;margin-top:28px}
+.kv{margin:0;display:grid}
+.kv div{display:flex;justify-content:space-between;gap:12px;padding-block:9px;border-top:1px solid var(--line)}
+.kv dd{margin:0;font-weight:700;color:var(--teal)}
+.terms{margin-top:26px;background:#f6f9fb;border-radius:20px;padding:20px}
+.terms ul{list-style:none;margin:0 0 12px;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 28px}
+.terms b{color:var(--navy)}
+@media (max-width:700px){
+  .prices .pl-intro,.extras,.terms ul{grid-template-columns:minmax(0,1fr)}
+  .row{grid-template-columns:minmax(0,1fr) auto}
+  .row p{grid-column:1/-1;grid-row:2}
+}
+
+/* contact */
+.contact{background:var(--accent-soft)}
+.contact-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:clamp(32px,6vw,80px)}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+label{display:grid;gap:6px;font-weight:500;font-size:.95rem}
+label.full{grid-column:1/-1}
+input,textarea{font:inherit;color:var(--fg);background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;width:100%}
+input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:120px;resize:vertical}
+.form-actions{grid-column:1/-1;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.note{grid-column:1/-1;margin:0;color:var(--accent);font-weight:500}
+
+footer{background:var(--navy-deep);color:#b8c8dc;padding-block:40px calc(40px + env(safe-area-inset-bottom,0px))}
+footer .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+footer .brand{color:#fff}
+
+@media (max-width: 760px){
+  .climb,.price,.contact-grid{grid-template-columns:minmax(0,1fr)}
+  .climb-head{position:static}
+  .avail-grid{grid-template-columns:minmax(0,1fr)}
+  form{grid-template-columns:minmax(0,1fr)}
+  .step{padding-inline-start:74px}
+  .steps::after{inset-inline-start:50px}
+  .step::before{width:54px}
+}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  .w{transition:none;opacity:1;transform:none}
+  .scroll-hint span{animation:none}
+  .btn,.step,.step::before{transition:none}
+}
+</style>
+<style>[hidden]{display:none!important}img{max-width:100%}:root{padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}</style>
+</head>
+<body>
+
+<div class="top">
+  <div class="wrap">
+    <a class="brand" href="#" aria-label="סולם, לראש העמוד">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="12 0 296 168" role="img" aria-label="סולם"><defs><linearGradient id="g" gradientUnits="userSpaceOnUse" x1="0" y1="66" x2="0" y2="8"><stop offset="0" stop-color="#0E8C7F"/><stop offset="1" stop-color="#2DD4BF"/></linearGradient></defs><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"><path d="M24 66 H72 Q84 66 84 78 V114 Q84 126 72 126 H24 Z" stroke="#0B2E59"/><path d="M110 66 H150 Q164 66 164 80 V100 Q164 126 138 126 H128" stroke="#0B2E59"/><path d="M184 66 H196 V126" stroke="#0B2E59"/><path d="M222 66 H272 Q296 66 296 90 V102 Q296 126 272 126 H246 Q222 126 222 102 Z" stroke="#0B2E59"/><g stroke="url(#g)"><path d="M110 66 V8"/><path d="M132 66 V20"/><path d="M110 52 H132" stroke-width="7"/><path d="M110 38 H132" stroke-width="7"/><path d="M110 24 H132" stroke-width="7"/></g></g><text x="160" y="160" text-anchor="middle" font-family="Heebo, Arial, sans-serif" font-size="15" letter-spacing="9" fill="#0E8C7F" font-weight="700">SULAM</text></svg>
+
+
+    </a>
+    <div class="top-actions">
+      <button class="a11y-btn" id="a11y-open" type="button" aria-haspopup="dialog" aria-controls="a11y-panel" aria-label="תפריט נגישות">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.5" r="2.2" fill="currentColor"/><path d="M4 8.5l8 1.5 8-1.5M12 10v5m0 0l-3.5 6.5M12 15l3.5 6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>נגישות</span>
+      </button>
+      <a class="btn btn-navy cta" href="#contact">דברו איתנו</a>
+    </div>
+  </div>
+</div>
+
+<main>
+  <section class="stage" id="stage" aria-label="מה אנחנו בונים">
+    <div class="pin">
+      <canvas id="scene" aria-hidden="true"></canvas>
+      <div class="chapters">
+        <div class="chap" data-k="0">
+          <h1>איש הטכנולוגיה של הארגון שלכם</h1>
+          <p>אתם אומרים מה צריך, אנחנו בונים. <strong>1,500 ₪ לחודש</strong> על כל הפיתוח, ואתם משלמים רק על השרתים.</p>
+          <div class="hero-actions">
+            <a class="btn btn-teal" href="#contact">דברו איתנו</a>
+            <a class="btn btn-light" href="#how">איך זה עובד</a>
+          </div>
+        </div>
+        <div class="chap" data-k="1">
+          <div class="eyebrow"><i>1</i> דשבורדים</div>
+          <h2>כל הנתונים במסך אחד</h2>
+          <p>פניות, אירועים ותקציב, מתעדכנים לבד. במקום עשרה קבצי אקסל, קישור אחד.</p>
+        </div>
+        <div class="chap" data-k="2">
+          <div class="eyebrow"><i>2</i> אתר לתושבים</div>
+          <h2>אתר אחד שמרכז הכל לתושבים</h2>
+          <p>אירועים, חוגים, טפסים ועדכונים, במיתוג שלכם. <strong>כלול במנוי</strong>, כולל האחסון.</p>
+        </div>
+        <div class="chap" data-k="3">
+          <div class="eyebrow"><i>3</i> אוטומציות</div>
+          <h2>אתם אומרים מה מעיק. אנחנו בונים אוטומציה.</h2>
+          <p>טופס נכנס לטבלה, הצוות מקבל הודעה, הדוח נשלח לבד. <strong>הבנייה כלולה ב-1,500 ₪.</strong></p>
+        </div>
+        <div class="chap" data-k="4">
+          <div class="eyebrow"><i>4</i> דפי אירוע</div>
+          <h2>דף לכל אירוע, מוכן תוך ימים</h2>
+          <p>הרשמה, כרטיסים ומעקב חי. אנחנו בונים, ואתם משלמים רק על השרת: <strong>24 ₪ לחודש.</strong></p>
+        </div>
+        <div class="chap" data-k="5">
+          <div class="eyebrow"><i>5</i> בוט וואטסאפ רשמי</div>
+          <h2>בוט שעונה לתושבים 24/7</h2>
+          <p>נסו בעצמכם: <strong>לחצו על שאלה</strong> ליד הטלפון, ותראו מה הבוט עונה.</p>
+        </div>
+      </div>
+      <div class="chips" aria-hidden="true"></div>
+      <div class="rungs" aria-hidden="true"><b></b><b></b><b></b><b></b><b></b></div>
+      <div class="scroll-hint" aria-hidden="true">גללו כדי לטפס<span></span></div>
+    </div>
+  </section>
+
+  <section class="band" id="how">
+    <div class="wrap climb">
+      <div class="climb-head">
+        <div class="kicker">איך עובדים איתנו</div>
+        <h2>חמישה שלבים, מהשיחה הראשונה ועד שזה באוויר</h2>
+        <p class="lead">אתם צריכים, אנחנו בונים. הפיתוח כלול במנוי, ועל כל דבר שעולה לאוויר משלמים רק את דמי ההפעלה שלו.</p>
+      </div>
+      <ol class="steps">
+        <li class="step"><div class="n">01</div><h3>מספרים לנו מה צריך</h3><p>בוואטסאפ, במייל או בטלפון. אפשר גם במשפט אחד.</p></li>
+        <li class="step"><div class="n">02</div><h3>אנחנו מאפיינים</h3><p>תוך יום עבודה שולחים לכם מה נבנה ומתי יהיה מוכן.</p></li>
+        <li class="step"><div class="n">03</div><h3>בונים ומראים לכם</h3><p>גרסה ראשונה לבדיקה, שאפשר ללחוץ עליה.</p></li>
+        <li class="step"><div class="n">04</div><h3>מתקנים ומעלים לאוויר</h3><p>מכניסים את ההערות שלכם ומעלים.</p></li>
+        <li class="step"><div class="n">05</div><h3>ממשיכים ללוות</h3><p>עדכונים, תיקונים ודוח חודשי קצר על מה שעשינו.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="clock-stage" id="avail" aria-label="זמינות">
+    <div class="clock-pin">
+      <div class="wrap clock-wrap">
+        <div class="clock-head">
+          <div class="kicker">זמינות</div>
+          <h2>תמיד יש מי שעונה</h2>
+          <p class="lead">גללו ותראו יממה אחת איתנו. אפשר לשלוח בקשה בכל שעה, בוואטסאפ או במייל, גם באמצע הלילה.</p>
+        </div>
+        <svg class="clock" id="clock" viewBox="0 0 1000 640" role="img" aria-label="שעון 24 שעות: בלילה הבקשה נשמרת, ב-06:00 הנציג חוזר אליכם, ב-08:00 שינויים קטנים מוכנים, ונציג זמין עד 24:00">
+          <defs>
+            <linearGradient id="dayg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2DD4BF"/><stop offset="1" stop-color="#0E8C7F"/></linearGradient>
+            <pattern id="night" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="12" height="12" fill="#eef3f7"/><rect width="5" height="12" fill="#dfe8ef"/></pattern>
+            <marker id="ah" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M1 1L11 6L1 11z" fill="#0B2E59"/></marker>
+            <marker id="ah2" viewBox="0 0 12 12" refX="10" refY="6" markerWidth="12" markerHeight="12" orient="auto-start-reverse"><path d="M1 1L11 6L1 11z" fill="#0E8C7F"/></marker>
+            <filter id="soft" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#0B2E59" flood-opacity=".14"/></filter>
+          </defs>
+          <circle cx="330" cy="320" r="255" fill="#fff" filter="url(#soft)"/>
+          <path d="M330 90 A230 230 0 0 1 560 320" fill="none" stroke="url(#night)" stroke-width="36" stroke-linecap="round"/>
+          <path d="M560 320 A230 230 0 1 1 330 90" fill="none" stroke="#edf5f4" stroke-width="36"/>
+          <path id="dayarc" d="M560 320 A230 230 0 1 1 330 90" fill="none" stroke="url(#dayg)" stroke-width="36" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+          <g id="ticks" stroke="#c3d0dc" stroke-width="3" stroke-linecap="round"></g>
+          <g font-family="Fredoka, Heebo, Arial, sans-serif" font-weight="600" font-size="26" fill="#475569" text-anchor="middle" direction="ltr">
+            <text x="330" y="52">00</text><text x="612" y="329">06</text><text x="330" y="612">12</text><text x="48" y="329">18</text>
+          </g>
+          <g id="hand"><line x1="330" y1="320" x2="330" y2="128" stroke="#0B2E59" stroke-width="7" stroke-linecap="round"/><circle cx="330" cy="128" r="11" fill="#2DD4BF" stroke="#0B2E59" stroke-width="4"/></g>
+          <circle cx="330" cy="320" r="132" fill="#fff" stroke="#e1eaf2" stroke-width="2"/>
+          <circle cx="330" cy="320" r="10" fill="#0B2E59"/>
+          <text id="ctime" x="330" y="312" text-anchor="middle" direction="ltr" font-family="Fredoka, Heebo, Arial, sans-serif" font-weight="700" font-size="64" fill="#0B2E59">00:00</text>
+          <text id="cstat" x="330" y="360" text-anchor="middle" direction="rtl" font-family="Heebo, Arial, sans-serif" font-weight="700" font-size="24" fill="#475569">לילה: הבקשה נשמרת</text>
+          <g class="callout" id="co6">
+            <path class="arrow" d="M574 300 C 610 250, 615 205, 648 196" fill="none" stroke="#0B2E59" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ah)" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <circle cx="560" cy="320" r="13" fill="#fff" stroke="#0B2E59" stroke-width="5"/>
+            <foreignObject x="656" y="110" width="330" height="150"><div xmlns="http://www.w3.org/1999/xhtml" class="bub"><b>06:00</b><span>בקשה שנשלחה בלילה? הנציג חוזר אליכם.</span></div></foreignObject>
+          </g>
+          <g class="callout" id="co8">
+            <path class="arrow" d="M545 452 C 585 490, 610 515, 648 512" fill="none" stroke="#0E8C7F" stroke-width="3.5" stroke-linecap="round" marker-end="url(#ah2)" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+            <circle cx="529" cy="435" r="13" fill="#fff" stroke="#0E8C7F" stroke-width="5"/>
+            <foreignObject x="656" y="430" width="330" height="150"><div xmlns="http://www.w3.org/1999/xhtml" class="bub teal"><b>08:00</b><span>שינויים קטנים מוכנים, לפני שהמשרדים נפתחים.</span></div></foreignObject>
+          </g>
+        </svg>
+        <div class="clock-cards">
+          <div class="bub" id="mc6"><b>06:00</b><span>בקשה שנשלחה בלילה? הנציג חוזר אליכם.</span></div>
+          <div class="bub teal" id="mc8"><b>08:00</b><span>שינויים קטנים מוכנים, לפני שהמשרדים נפתחים.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="incl-stage" id="incl" aria-label="כלול במנוי">
+    <div class="incl-pin">
+      <div class="wrap incl-head">
+        <div>
+          <div class="kicker">כלול במנוי, בלי עלות שרת</div>
+          <h2>שלושה דברים שמקבלים מהיום הראשון</h2>
+        </div>
+        <div class="incl-count"><span id="incl-n">1</span> / 3</div>
+      </div>
+      <div class="track" id="track">
+        <article class="slide">
+          <div class="vis v-site" aria-hidden="true">
+            <div class="bar"><i></i><i></i><i></i></div>
+            <div class="ev" style="background:linear-gradient(160deg,#1b6fb3,#0B2E59)">יום העצמאות</div>
+            <div class="ev" style="background:linear-gradient(160deg,#2DD4BF,#0E8C7F)">חוגי חורף</div>
+            <div class="ev" style="background:linear-gradient(160deg,#f2a33a,#d4731c)">פסטיבל קיץ</div>
+          </div>
+          <span class="tag">01</span>
+          <h3>דף נחיתה קבוע למועצה</h3>
+          <p>אתר אחד שמרכז את כל האירועים והפעילויות, במיתוג המועצה. מקושר מהאינסטגרם ומהאתר הראשי, נגיש לפי ת"י 5568.</p>
+        </article>
+        <article class="slide">
+          <div class="vis v-chat" aria-hidden="true">
+            <div class="m me">איך משלמים ארנונה?</div>
+            <div class="m">אפשר באתר או במוקד. הנה הקישור ✓</div>
+            <div class="m me">ההופעה מחר בוטלה?</div>
+            <div class="m">לא, מתקיימת ב-20:00 בפארק 🎶</div>
+          </div>
+          <span class="tag">02</span>
+          <h3>בוט וואטסאפ רשמי</h3>
+          <p>עונה לתושבים ולעובדים על ארנונה, שעות פתיחה, אירועים ונהלים. כשהוא לא יודע, הוא מעביר לנציג, ולא ממציא.</p>
+        </article>
+        <article class="slide">
+          <div class="vis v-dash" aria-hidden="true">
+            <div class="bars"><i style="height:40%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:75%"></i><i style="height:95%"></i><i style="height:58%"></i></div>
+            <ul><li><b>לא נענתה</b>מתי נפתחת הבריכה?</li><li><b>לא נענתה</b>איפה מקבלים תו חניה?</li></ul>
+          </div>
+          <span class="tag">03</span>
+          <h3>דשבורד לבוט</h3>
+          <p>כמה פניות היו, באילו נושאים ובאילו שעות. ומה הבוט לא ידע לענות, כדי שתדעו איזה מידע חסר לתושבים.</p>
+        </article>
+      </div>
+      <div class="wrap"><div class="incl-progress"><i id="incl-p"></i></div></div>
+    </div>
+  </section>
+
+  <section class="band" id="price">
+    <div class="wrap">
+      <div class="price2">
+        <div>
+          <div class="kicker">המנוי החודשי</div>
+          <div class="big-price"><span id="pnum">1,500</span> ₪<small>לחודש</small></div>
+          <div class="price-sub"><span>כל עבודת הפיתוח כלולה</span><span>חודש בחודשו</span><span>ללא התחייבות</span></div>
+          <p class="lead">פרויקט גדול אחד או כמה קטנים בכל חודש, לפי סדר העדיפויות שלכם.</p>
+        </div>
+        <div class="addon">
+          <div class="k">שקיפות מלאה</div>
+          <div class="range">כל המחירים, <em>בלי אותיות קטנות</em></div>
+          <p>הבנייה כלולה במנוי. כל פרויקט שעולה לאוויר מקבל דמי הפעלה חודשיים קבועים, שכוללים שרת, אבטחה וגיבויים. את כל הפרטים תמצאו במחירון המלא.</p>
+          <button class="btn btn-light" type="button" data-open="dlg-prices">לקבלת המחירון המלא</button>
+        </div>
+      </div>
+
+      <div class="marquee" aria-label="דוגמאות למה שאפשר לבנות">
+        <div class="mrow"><span>דשבורד הנהלה</span><span>צ'ק־אין בברקוד</span><span>טופס דיגיטלי</span><span>מערכת כרטוס</span><span>סקר תושבים</span><span>דף אירוע ייעודי</span><span>דשבורד מוקד ופניות</span><span>הרשמה לחוגים</span>
+          <span>דשבורד הנהלה</span><span>צ'ק־אין בברקוד</span><span>טופס דיגיטלי</span><span>מערכת כרטוס</span><span>סקר תושבים</span><span>דף אירוע ייעודי</span><span>דשבורד מוקד ופניות</span><span>הרשמה לחוגים</span></div>
+        <div class="mrow rev"><span>אפליקציית ווב</span><span>דוח שבועי למנכ"ל</span><span>תפוצת הודעות</span><span>דשבורד תקציב</span><span>אוטומציה לטפסים</span><span>בוט למחלקה</span><span>אפליקציה בחנויות</span><span>משימות בין מחלקות</span>
+          <span>אפליקציית ווב</span><span>דוח שבועי למנכ"ל</span><span>תפוצת הודעות</span><span>דשבורד תקציב</span><span>אוטומציה לטפסים</span><span>בוט למחלקה</span><span>אפליקציה בחנויות</span><span>משימות בין מחלקות</span></div>
+      </div>
+
+      <div class="terms2">
+        <span><b>הנתונים שייכים למועצה</b>, עם ייצוא מלא בסיום</span>
+        <span><b>תשלום רק על שירות שסופק</b></span>
+        <span><b>סליקה ישירה</b> דרך חברת הסליקה של המועצה</span>
+        <span><b>עוסק פטור</b>, בלי מע"מ</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="band contact" id="contact">
+    <div class="wrap contact-grid">
+      <div>
+        <div class="kicker">צור קשר</div>
+        <h2>ספרו לנו מה צריך</h2>
+        <p class="lead">נחזור אליכם תוך יום עבודה, עם רעיון ראשון.</p>
+      </div>
+      <form id="contact-form" novalidate>
+        <label>שם<input id="f-name" name="name" autocomplete="name" required></label>
+        <label>ארגון<input id="f-org" name="org" placeholder="למשל: מועצה מקומית" required></label>
+        <label class="full">טלפון<input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" style="text-align:right" required></label>
+        <label class="full">מה צריך?<textarea id="f-msg" name="msg"></textarea></label>
+        <input id="f-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <div class="form-actions">
+          <button class="btn btn-teal" type="submit">שליחה</button>
+          <a class="btn btn-ghost" href="#contact">וואטסאפ</a>
+        </div>
+        <p class="fine full-row">הפרטים נשמרים רק כדי לחזור אליכם. <button type="button" class="link" data-open="dlg-privacy">מדיניות פרטיות</button></p>
+        <p class="note" id="form-note" role="status" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="הגדרות נגישות" hidden>
+  <div class="a11y-head"><b>הגדרות נגישות</b><button type="button" class="x" id="a11y-close" aria-label="סגירה">×</button></div>
+  <div class="a11y-grid">
+    <button type="button" data-a="bigger">הגדלת טקסט</button>
+    <button type="button" data-a="smaller">הקטנת טקסט</button>
+    <button type="button" data-a="contrast" aria-pressed="false">ניגודיות גבוהה</button>
+    <button type="button" data-a="links" aria-pressed="false">הדגשת קישורים</button>
+    <button type="button" data-a="still" aria-pressed="false">עצירת אנימציות</button>
+    <button type="button" data-a="readable" aria-pressed="false">גופן קריא</button>
+  </div>
+  <div class="a11y-foot"><button type="button" data-a="reset" class="link">איפוס</button><button type="button" class="link" data-open="dlg-a11y">הצהרת נגישות</button></div>
+</div>
+
+<dialog id="dlg-prices" class="doc wide prices">
+  <div class="leads-head"><h2>המחירון המלא</h2><span class="fine">בתוקף עד 31.12.2026</span></div>
+  <div class="pl-intro">
+    <div class="pl-sub"><b>1,500 ₪</b><span>לחודש · חודש בחודשו, ללא התחייבות</span></div>
+    <p>המנוי כולל את כל עבודת הפיתוח: פרויקט גדול אחד או כמה פרויקטים קטנים בכל חודש, לפי סדר העדיפויות של המועצה. פרויקט גדול במיוחד, למשל מערכת חדשה שלמה, יתומחר בנפרד ומראש.</p>
+  </div>
+  <h3>כלול במנוי, בלי עלות שרת</h3>
+  <ul class="dots">
+    <li><b>דף נחיתה קבוע למועצה:</b> מרכז את כל האירועים והפעילויות, במיתוג המועצה. נגיש לפי ת"י 5568, כולל אירוח, אבטחה וגיבויים.</li>
+    <li><b>בוט וואטסאפ רשמי:</b> שירות לתושב, אירועים, מידע לעובדים והעברה לנציג. הבוט יודע רק את מה שהמועצה נותנת לו.</li>
+    <li><b>דשבורד לבוט:</b> כמה פניות, באילו נושאים ושעות, ומה הבוט לא ידע לענות.</li>
+  </ul>
+  <h3>דמי הפעלה לפרויקטים</h3>
+  <p class="fine">משלמים כל עוד הפרויקט באוויר. דמי ההפעלה כוללים שרת, אבטחה וכל מה שצריך כדי שלא ייפול. פרויקט שלא צריך יורד מהאוויר, והתשלום עליו נפסק.</p>
+        <div class="group">
+          <div class="g-title"><h3>דפים וטפסים</h3><span>שרת וקישור</span></div>
+          <div class="row"><b>דף אירוע ייעודי</b><p>פרטים, הרשמה ודשבורד נרשמים (הדשבורד כלול).</p><em>24 ₪</em></div>
+          <div class="row"><b>דף נחיתה נוסף</b><p>לקמפיין, פרויקט או מחלקה.</p><em>24 ₪</em></div>
+          <div class="row"><b>טופס דיגיטלי</b><p>במקום נייר: בקשות, הרשמה פשוטה, פניות.</p><em>9 ₪</em></div>
+          <div class="row"><b>סקר תושבים</b><p>סקר עם דף תוצאות וגרפים למועצה.</p><em>15 ₪</em></div>
+        </div>
+
+        <div class="group">
+          <div class="g-title"><h3>אירועים ופעילויות</h3><span>שרת, מסד נתונים והרשאות</span></div>
+          <div class="row"><b>צ'ק־אין בברקוד</b><p>כל נרשם מקבל ברקוד, והסדרנים סורקים בכניסה מהטלפון.</p><em>35 ₪</em></div>
+          <div class="row"><b>מערכת כרטוס</b><p>מכירת כרטיסים דרך הסליקה של המועצה, וכרטיס שנשלח לתושב.</p><em>55 ₪ <small>+ הודעות*</small></em></div>
+          <div class="row"><b>הרשמה לחוגים ופעילויות</b><p>הרשמה, תפוסה, רשימות המתנה ותשלום.</p><em>65 ₪</em></div>
+        </div>
+
+        <div class="group">
+          <div class="g-title"><h3>דשבורדים</h3><span>שרת, מסד נתונים, הרשאות ועדכון אוטומטי</span></div>
+          <div class="row"><b>דשבורד הנהלה</b><p>תמונת מצב למנכ"ל ולראש המועצה מכמה מקורות מידע.</p><em>75 ₪</em></div>
+          <div class="row"><b>דשבורד מוקד ופניות</b><p>פניות לפי נושא, זמני טיפול ועיכובים.</p><em>60 ₪</em></div>
+          <div class="row"><b>דשבורד חוגים ותפוסה</b><p>תפוסה, המתנה והשתתפות לפי יישוב.</p><em>45 ₪</em></div>
+          <div class="row"><b>דשבורד תקציב ופרויקטים</b><p>ביצוע מול תכנון, עם הרשאות מוגבלות.</p><em>50 ₪</em></div>
+          <div class="row"><b>דשבורד משימות בין מחלקות</b><p>מי אחראי על מה, סטטוס ומה תקוע.</p><em>50 ₪</em></div>
+        </div>
+
+        <div class="group">
+          <div class="g-title"><h3>אוטומציות</h3><span>שרת, קישור, ולפעמים מסד נתונים ו-API חיצוני</span></div>
+          <div class="row"><b>אוטומציה פשוטה</b><p>למשל: טופס, טבלה, התראה לאחראי.</p><em>12 ₪</em></div>
+          <div class="row"><b>אוטומציה עם מסד נתונים</b><p>תהליך ששומר ומעבד מידע לאורך זמן.</p><em>30 ₪</em></div>
+          <div class="row"><b>אוטומציה עם API חיצוני</b><p>חיבור ל-SMS, מייל, AI, מפות או מערכת של המועצה.</p><em>30 ₪ <small>+ API*</small></em></div>
+          <div class="row"><b>דוחות אוטומטיים</b><p>דוח שנשלח לבד, למשל למנכ"ל כל יום ראשון.</p><em>20 ₪</em></div>
+          <div class="row"><b>תפוצת הודעות</b><p>וואטסאפ, SMS או מייל לתושבים: תזכורות ועדכונים.</p><em>20 ₪ <small>+ הודעות*</small></em></div>
+          <div class="row"><b>בוט וואטסאפ נוסף</b><p>בוט נפרד למחלקה או לאירוע גדול, עם דשבורד משלו.</p><em>60 ₪ <small>+ AI*</small></em></div>
+        </div>
+
+        <div class="group">
+          <div class="g-title"><h3>אפליקציות</h3><span>כל החלקים, ועוד התחברות, גיבויים, ניטור ועדכונים</span></div>
+          <div class="row"><b>אפליקציית ווב</b><p>נפתחת מקישור ואפשר להוסיף למסך הבית, בלי חנות. דיווח מפגעים, אפליקציה לעובדים או לרכזים.</p><em>120 ₪</em></div>
+          <div class="row"><b>אפליקציה בחנויות</b><p>Google Play ו-App Store, עם התראות פוש, הגשה ואישור בחנויות ועדכון גרסאות.</p><em>250 ₪ <small>+ דמי חנות</small></em></div>
+        </div>
+        <p class="fine">כל המחירים לחודש. * לפי שימוש, ראו למטה.</p>
+
+        <div class="extras">
+          <div>
+            <h3>עלויות שנתיות וחד־פעמיות</h3>
+            <dl class="kv">
+              <div><dt>דומיין co.il</dt><dd>150 ₪ לשנה</dd></div>
+              <div><dt>דומיין com</dt><dd>100 ₪ לשנה</dd></div>
+              <div><dt>חשבון Google Play</dt><dd>120 ₪ חד־פעמי</dd></div>
+              <div><dt>חשבון App Store</dt><dd>400 ₪ לשנה</dd></div>
+            </dl>
+          </div>
+          <div>
+            <h3>שירותים לפי שימוש</h3>
+            <p class="fine" style="margin-bottom:12px">מקבלים מחירון מראש לפני שמפעילים, ובכל חודש רואים בדוח בדיוק כמה השתמשתם.</p>
+            <ul class="dots">
+              <li>הודעות וואטסאפ יזומות: לפי הודעה. מענה לפניות של תושבים כלול.</li>
+              <li>הודעות SMS ומיילים: לפי הודעה.</li>
+              <li>תשובות AI בבוט נוסף: לפי כמות שאלות.</li>
+              <li>מפות ושירותי מיקום: לפי כמות שימוש.</li>
+            </ul>
+          </div>
+        </div>
+
+  <form method="dialog"><button class="btn btn-navy">סגירה</button></form>
+</dialog>
+
+<dialog id="dlg-a11y" class="doc">
+  <h2>הצהרת נגישות</h2>
+  <p>אנחנו בסולם רואים חשיבות בהנגשת האתר לאנשים עם מוגבלות, ופועלים כדי שהאתר יעמוד בתקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), תשע"ג-2013, ובתקן הישראלי ת"י 5568, ברמה AA.</p>
+  <h3>מה עשינו באתר</h3>
+  <ul>
+    <li>האתר מותאם לקוראי מסך, לניווט במקלדת ולמסכים בכל גודל.</li>
+    <li>תפריט נגישות: הגדלת טקסט, ניגודיות גבוהה, הדגשת קישורים, גופן קריא ועצירת אנימציות.</li>
+    <li>האתר מכבד את הגדרת "הפחתת תנועה" של מערכת ההפעלה.</li>
+    <li>לכל שדה בטופס יש תווית, ולכל כפתור יש שם ברור.</li>
+  </ul>
+  <h3>נתקלתם בבעיה?</h3>
+  <p>אם משהו באתר לא נגיש לכם, נשמח לשמוע ולתקן. רכז הנגישות: [שם], טלפון [מספר], מייל [כתובת]. נחזור אליכם תוך 3 ימי עבודה.</p>
+  <p class="fine">עדכון אחרון של ההצהרה: אוקטובר 2026.</p>
+  <form method="dialog"><button class="btn btn-navy">סגירה</button></form>
+</dialog>
+
+<dialog id="dlg-privacy" class="doc">
+  <h2>מדיניות פרטיות</h2>
+  <p>כשאתם ממלאים את טופס יצירת הקשר, אנחנו שומרים את השם, הארגון, הטלפון ומה שכתבתם, רק כדי לחזור אליכם בנוגע לפנייה.</p>
+  <ul>
+    <li>אנחנו לא מוכרים ולא מעבירים את הפרטים לאף אחד.</li>
+    <li>אפשר לבקש בכל רגע לראות, לתקן או למחוק את הפרטים שלכם.</li>
+    <li>נשמור את הפרטים כל עוד יש בינינו קשר עסקי, או עד שתבקשו למחוק.</li>
+  </ul>
+  <p>לפניות בנושא פרטיות: [מייל].</p>
+  <form method="dialog"><button class="btn btn-navy">סגירה</button></form>
+</dialog>
+
+
+<footer>
+  <div class="wrap">
+    <a class="brand" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="12 0 296 168" role="img" aria-label="סולם"><g fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"><path d="M24 66 H72 Q84 66 84 78 V114 Q84 126 72 126 H24 Z" stroke="#FFFFFF"/><path d="M110 66 H150 Q164 66 164 80 V100 Q164 126 138 126 H128" stroke="#FFFFFF"/><path d="M184 66 H196 V126" stroke="#FFFFFF"/><path d="M222 66 H272 Q296 66 296 90 V102 Q296 126 272 126 H246 Q222 126 222 102 Z" stroke="#FFFFFF"/><g stroke="#2DD4BF"><path d="M110 66 V8"/><path d="M132 66 V20"/><path d="M110 52 H132" stroke-width="7"/><path d="M110 38 H132" stroke-width="7"/><path d="M110 24 H132" stroke-width="7"/></g></g><text x="160" y="160" text-anchor="middle" font-family="Heebo, Arial, sans-serif" font-size="15" letter-spacing="9" fill="#2DD4BF" font-weight="700">SULAM</text></svg>
+</a>
+    <nav class="foot-links" aria-label="מידע משפטי">
+      <button type="button" class="link" data-open="dlg-a11y">הצהרת נגישות</button>
+      <button type="button" class="link" data-open="dlg-privacy">מדיניות פרטיות</button>
+    </nav>
+    <span>טכנולוגיה, שלב אחרי שלב.</span>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const stage = document.getElementById('stage');
+const chaps = [...document.querySelectorAll('.chap')];
+const rungUI = [...document.querySelectorAll('.rungs b')];
+const N_CH = chaps.length - 1; // 5 chapters after hero
+
+/* ---------- dialogs ---------- */
+document.querySelectorAll('[data-open]').forEach(b => b.addEventListener('click', () => {
+  const d = document.getElementById(b.dataset.open); if (!d) return;
+  if (d.id === 'dlg-leads') loadLeads();
+  d.showModal ? d.showModal() : d.setAttribute('open','');
+}));
+
+/* ---------- accessibility menu ---------- */
+const A = document.documentElement, panel = document.getElementById('a11y-panel'), openBtn = document.getElementById('a11y-open');
+let a11y = {size:100, contrast:false, links:false, still:false, readable:false};
+try { Object.assign(a11y, JSON.parse(localStorage.getItem('sulam-a11y') || '{}')); } catch(e){}
+function applyA11y(){
+  A.style.fontSize = a11y.size + '%';
+  ['contrast','links','still','readable'].forEach(k => { A.classList.toggle('a-' + k, !!a11y[k]); const b = panel.querySelector(`[data-a="${k}"]`); b && b.setAttribute('aria-pressed', a11y[k] ? 'true' : 'false'); });
+  window.__sulamStill = a11y.still;
+  try { localStorage.setItem('sulam-a11y', JSON.stringify(a11y)); } catch(e){}
+}
+panel.addEventListener('click', e => {
+  const k = e.target.closest('[data-a]')?.dataset.a; if (!k) return;
+  if (k === 'bigger') a11y.size = Math.min(150, a11y.size + 10);
+  else if (k === 'smaller') a11y.size = Math.max(90, a11y.size - 10);
+  else if (k === 'reset') a11y = {size:100, contrast:false, links:false, still:false, readable:false};
+  else a11y[k] = !a11y[k];
+  applyA11y();
+});
+openBtn.addEventListener('click', () => { panel.hidden = !panel.hidden; openBtn.setAttribute('aria-expanded', String(!panel.hidden)); if (!panel.hidden) panel.querySelector('button[data-a]').focus(); });
+document.getElementById('a11y-close').addEventListener('click', () => { panel.hidden = true; openBtn.focus(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && !panel.hidden) { panel.hidden = true; openBtn.focus(); } });
+applyA11y();
+
+/* ---------- contact form -> /api/lead ---------- */
+const form = document.getElementById('contact-form'), note = document.getElementById('form-note');
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const v = id => document.getElementById(id).value.trim();
+  const lead = {name: v('f-name'), org: v('f-org'), phone: v('f-phone'), msg: v('f-msg'), website: v('f-website')};
+  note.hidden = false;
+  if (!lead.name || !lead.phone) { note.textContent = 'כדי שנחזור אליכם, מלאו שם וטלפון.'; return; }
+  const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
+  note.textContent = 'שולחים…';
+  try {
+    const r = await fetch('/api/lead', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(lead)});
+    if (!r.ok) throw new Error(String(r.status));
+    note.textContent = 'קיבלנו! נחזור אליכם בוואטסאפ תוך יום עבודה.';
+    form.reset();
+  } catch(err) {
+    note.textContent = 'השליחה לא עברה. נסו שוב בעוד רגע, או כתבו לנו בוואטסאפ.';
+  } finally { btn.disabled = false; }
+});
+
+/* ---------- steps ladder in "how it works" ---------- */
+const steps = [...document.querySelectorAll('.step')];
+function litSteps(){
+  const line = innerHeight * 0.72;
+  steps.forEach(s => s.classList.toggle('lit', s.getBoundingClientRect().top < line));
+}
+addEventListener('scroll', litSteps, {passive:true}); litSteps();
+
+
+/* ---------- availability clock ---------- */
+const clockStage = document.getElementById('avail'), clockSvg = document.getElementById('clock');
+const tg = document.getElementById('ticks');
+for (let h = 0; h < 24; h++) { const a = h / 24 * Math.PI * 2 - Math.PI / 2, r1 = h % 6 ? 196 : 186, r2 = 206;
+  const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l.setAttribute('x1', 330 + r1 * Math.cos(a)); l.setAttribute('y1', 320 + r1 * Math.sin(a)); l.setAttribute('x2', 330 + r2 * Math.cos(a)); l.setAttribute('y2', 320 + r2 * Math.sin(a));
+  if (!(h % 6)) l.setAttribute('stroke', '#0B2E59'); tg.appendChild(l); }
+const hand = document.getElementById('hand'), dayArc = document.getElementById('dayarc'), ctime = document.getElementById('ctime'), cstat = document.getElementById('cstat');
+const co6 = document.getElementById('co6'), co8 = document.getElementById('co8'), mc6 = document.getElementById('mc6'), mc8 = document.getElementById('mc8');
+if (reduce) document.documentElement.classList.add('no-cpin');
+function setHour(h){
+  hand.setAttribute('transform', `rotate(${h * 15} 330 320)`);
+  const mins = Math.floor(h * 60) % (24 * 60), hh = String(Math.floor(mins / 60)).padStart(2, '0'), mm = String(Math.floor(mins % 60 / 15) * 15).padStart(2, '0');
+  ctime.textContent = h >= 24 ? '24:00' : `${hh}:${mm}`;
+  cstat.textContent = h < 6 ? 'לילה: הבקשה נשמרת' : h < 8 ? 'הנציג חוזר אליכם' : h < 24 ? 'נציג זמין' : 'מחר ב-06:00 שוב כאן';
+  cstat.setAttribute('fill', h < 6 ? '#475569' : '#0E8C7F');
+  dayArc.setAttribute('stroke-dashoffset', String(1 - Math.max(0, Math.min(1, (h - 6) / 18))));
+  const on6 = h >= 6, on8 = h >= 8;
+  co6.classList.toggle('on', on6); co8.classList.toggle('on', on8); mc6.classList.toggle('on', on6); mc8.classList.toggle('on', on8);
+}
+function clockScroll(){
+  clockSvg.setAttribute('viewBox', innerWidth <= 860 ? '15 20 630 620' : '0 0 1000 640');
+  if (reduce) { setHour(8.5); return; }
+  const r = clockStage.getBoundingClientRect();
+  const q = Math.min(1, Math.max(0, -r.top / ((r.height - innerHeight) || 1)));
+  setHour(Math.min(24, Math.max(0, (q - .04) / .9 * 24)));
+}
+addEventListener('scroll', clockScroll, {passive:true}); addEventListener('resize', clockScroll); clockScroll();
+
+/* ---------- included: horizontal pinned track ---------- */
+const incl = document.getElementById('incl'), track = document.getElementById('track');
+const slides = [...track.children], inclN = document.getElementById('incl-n'), inclP = document.getElementById('incl-p');
+if (reduce) document.documentElement.classList.add('no-hpin');
+function hpin(){
+  if (reduce) return;
+  const r = incl.getBoundingClientRect();
+  const q = Math.min(1, Math.max(0, -r.top / ((r.height - innerHeight) || 1)));
+  const max = Math.max(0, track.scrollWidth - innerWidth);
+  track.style.transform = 'translateX(' + (q * max) + 'px)';
+  inclP.style.setProperty('--pp', q);
+  inclN.textContent = Math.min(3, 1 + Math.round(q * 2));
+  const cx = innerWidth / 2;
+  slides.forEach(sl => { const b = sl.getBoundingClientRect(); const d = Math.abs(b.left + b.width/2 - cx) / innerWidth; sl.style.setProperty('--sc', (1 - Math.min(.08, d * .12)).toFixed(3)); });
+}
+addEventListener('scroll', hpin, {passive:true}); addEventListener('resize', hpin); hpin();
+
+/* ---------- price count-up ---------- */
+const pnum = document.getElementById('pnum');
+if (!reduce && 'IntersectionObserver' in window){
+  pnum.textContent = '0';
+  const pio = new IntersectionObserver(es => { if (!es[0].isIntersecting) return; pio.disconnect();
+    const t0 = performance.now();
+    (function tick(now){ const k = Math.min(1, (now - t0) / 1300); const v = Math.round(1500 * (1 - Math.pow(1 - k, 3)));
+      pnum.textContent = v.toLocaleString('en-US'); if (k < 1) requestAnimationFrame(tick); })(t0);
+  }, {threshold:.5});
+  pio.observe(pnum);
+}
+
+/* ---------- stage progress ---------- */
+function stageProgress(){
+  const r = stage.getBoundingClientRect();
+  const span = r.height - innerHeight;
+  return Math.min(1, Math.max(0, -r.top / (span || 1)));
+}
+const clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+const mob = () => innerWidth <= 760;
+
+chaps.forEach(el=>{
+  el.querySelectorAll('h1,h2').forEach(h=>{
+    const words = h.textContent.trim().split(/\s+/);
+    h.setAttribute('aria-label', h.textContent.trim());
+    h.innerHTML = words.map((w,i)=>`<span class="w" style="--i:${i}" aria-hidden="true">${w}</span>`).join(' ');
+  });
+});
+const CHIPS = [
+  [['₪','1,500 ₪ לחודש','כל הפיתוח כלול'],['✓','משלמים רק על שרתים','מ-9 ₪ לחודש']],
+  [['↑','128 פניות היום','מתעדכן לבד'],['%','91% טופלו','דשבורד מוקד']],
+  [['★','אירועי החודש','במקום אחד'],['✓','נגיש לפי ת"י 5568','מותאם לנייד']],
+  [['⚡','312 הרצות החודש','בלי העתק־הדבק'],['✓','הצוות קיבל התראה','בוואטסאפ']],
+  [['+','214 נרשמו היום','דף יום העצמאות'],['▣','צ\'ק־אין בברקוד','סריקה מהטלפון']],
+  [['?','מתי פינוי האשפה?','לחצו לשאול'],['?','איך משלמים ארנונה?','לחצו לשאול'],['?','יש בור בכביש, מה עושים?','לחצו לשאול']]
+];
+const BOT_A = [
+  'פינוי אשפה ברחוב האלון: ימים א׳ ו-ד׳, משעה 06:00. רוצים תזכורת בערב שלפני?',
+  'אפשר לשלם באתר המועצה, בהוראת קבע או במוקד. הנה קישור לתשלום ✓',
+  'שלחו כאן תמונה ומיקום, ונפתח פנייה למחלקת התשתיות. נעדכן כשיטופל.'
+];
+let botLog = [], botStart = 0;
+const chipBox = document.querySelector('.chips');
+const chipEls = CHIPS.map((pair,k) => pair.map((c,j) => {
+  const ask = k === CHIPS.length - 1;
+  const d = document.createElement(ask ? 'button' : 'div'); d.className = 'chip' + (ask ? ' ask' : '');
+  d.innerHTML = `<i>${c[0]}</i><div>${c[1]}<small>${c[2]}</small></div>`;
+  if (ask) { d.type = 'button'; d.addEventListener('click', () => { botLog.push(j); botLog = botLog.slice(-2); botStart = performance.now(); d.classList.add('asked'); }); }
+  d.style.opacity = 0; chipBox.appendChild(d); return d;
+}));
+const CHIP_OFF = [[-.92, -.5],[.48, .42],[-.92, .12]]; // relative to phone, in phone-heights
+function placeChips(c, sx0, sy0, ph, t){
+  chipEls.forEach((pair,k)=>{
+    const d = c - k, o = Math.max(0, Math.min(1, 1 - Math.abs(d) * 2.4));
+    pair.forEach((el,j)=>{
+      const off = CHIP_OFF[j];
+      const fl = reduce ? 0 : Math.sin(t*1.1 + j*2 + k) * 6;
+      let x = sx0 + off[0] * ph * .55 + (off[0] < 0 ? -el.offsetWidth : 0);
+      let y = sy0 + off[1] * ph + fl - d * 60 * (j % 2 ? 1 : -1);
+      x = Math.max(12, Math.min(innerWidth - el.offsetWidth - 12, x));
+      y = Math.max(80, Math.min(innerHeight - el.offsetHeight - 12, y));
+      el.style.opacity = o;
+      el.style.pointerEvents = o > .5 ? 'auto' : 'none';
+      el.tabIndex = o > .5 ? 0 : -1;
+      el.style.transform = `translate(${x}px, ${y}px) scale(${.92 + o*.08})`;
+    });
+  });
+}
+function updateChapters(p){
+  const c = p * N_CH;
+  chaps.forEach((el,k)=>{
+    const d = c - k;
+    const o = clamp(1 - Math.abs(d) * 2.2, 0, 1);
+    el.style.opacity = o;
+    el.style.visibility = o < 0.01 ? 'hidden' : 'visible';
+    el.classList.toggle('in', o > .45);
+    const y = -d * 40;
+    el.style.transform = mob() ? `translateY(${y}px)` : `translateY(calc(-50% + ${y}px))`;
+    const a = el.querySelector('.hero-actions'); if (a) a.style.pointerEvents = o > .5 ? 'auto' : 'none';
+  });
+  rungUI.forEach((b,i)=>b.classList.toggle('on', c >= i + 0.6));
+}
+
+if (!window.THREE) { document.documentElement.classList.add('no-webgl'); chaps.forEach(e=>e.classList.add('in')); updateChapters(0); return; }
+
+/* ---------- three.js scene ---------- */
+const canvas = document.getElementById('scene');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false}); }
+catch(e){ document.documentElement.classList.add('no-webgl'); chaps.forEach(e=>e.classList.add('in')); updateChapters(0); return; }
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+const scene = new THREE.Scene();
+const BG = new THREE.Color('#ffffff');
+scene.background = BG;
+scene.fog = new THREE.Fog(BG, 12, 30);
+const camera = new THREE.PerspectiveCamera(38, 1, .1, 100);
+
+scene.add(new THREE.HemisphereLight('#ffffff', '#c9dbe8', 1.05));
+const key = new THREE.DirectionalLight('#ffffff', 1.1); key.position.set(-4, 6, 8); scene.add(key);
+const rim = new THREE.PointLight('#2DD4BF', 2.2, 14); scene.add(rim);
+
+const world = new THREE.Group(); scene.add(world);
+
+/* --- ladder --- */
+const L = 16, W = 1.25, RUNGS = 22;
+const railMat = new THREE.MeshStandardMaterial({color:'#0E8C7F', emissive:'#2DD4BF', emissiveIntensity:.18, roughness:.3, metalness:.35});
+const rungMat = new THREE.MeshStandardMaterial({color:'#ffffff', roughness:.35, metalness:.15});
+const railA = new THREE.Mesh(new THREE.BufferGeometry(), railMat);
+const railB = new THREE.Mesh(new THREE.BufferGeometry(), railMat);
+world.add(railA, railB);
+const rungGeo = new THREE.CylinderGeometry(.045, .045, 1, 10);
+const rungs = new THREE.InstancedMesh(rungGeo, rungMat, RUNGS);
+world.add(rungs);
+const dummy = new THREE.Object3D(), up = new THREE.Vector3(0,1,0);
+const cOn = new THREE.Color('#2DD4BF'), cOff = new THREE.Color('#c3d0dc');
+
+function ladderParams(p, t){
+  const e = ease(p);
+  return {
+    twist: .05 + e * 1.15,                 // turns along the ladder
+    radius: 2.15 + e * .35,
+    bend: Math.sin(p * Math.PI) * .7,     // sideways bow, peaks mid-scroll
+    rot: Math.PI + e * Math.PI * .9 + (reduce?0:Math.sin(t*.25)*.05),
+    lean: .12 - e * .12
+  };
+}
+function spine(s, P, out){
+  const th = P.rot + P.twist * (s - .5) * Math.PI * 2;
+  const y = (s - .5) * L;
+  out.set(Math.sin(th) * P.radius + Math.sin(s * Math.PI) * P.bend + y * P.lean * .3,
+          y,
+          Math.cos(th) * P.radius);
+  return th;
+}
+const tmp = new THREE.Vector3(), nrm = new THREE.Vector3();
+function railPoint(s, P, side){
+  const th = spine(s, P, tmp);
+  nrm.set(Math.cos(th), 0, -Math.sin(th));
+  return tmp.clone().addScaledVector(nrm, side * W / 2);
+}
+class Rail extends THREE.Curve{
+  constructor(P, side){ super(); this.P=P; this.side=side; }
+  getPoint(s, target = new THREE.Vector3()){ return target.copy(railPoint(s, this.P, this.side)); }
+}
+function buildLadder(P, litUpTo){
+  railA.geometry.dispose(); railB.geometry.dispose();
+  railA.geometry = new THREE.TubeGeometry(new Rail(P, 1), 140, .07, 8, false);
+  railB.geometry = new THREE.TubeGeometry(new Rail(P,-1), 140, .07, 8, false);
+  for (let i=0;i<RUNGS;i++){
+    const s = (i + .5) / RUNGS;
+    const a = railPoint(s, P, 1), b = railPoint(s, P, -1);
+    const mid = a.clone().add(b).multiplyScalar(.5);
+    const dir = b.clone().sub(a); const len = dir.length();
+    dummy.position.copy(mid);
+    dummy.quaternion.setFromUnitVectors(up, dir.normalize());
+    dummy.scale.set(1, len, 1);
+    dummy.updateMatrix();
+    rungs.setMatrixAt(i, dummy.matrix);
+    rungs.setColorAt(i, s <= litUpTo ? cOn : cOff);
+  }
+  rungs.instanceMatrix.needsUpdate = true;
+  if (rungs.instanceColor) rungs.instanceColor.needsUpdate = true;
+}
+
+/* --- phone --- */
+const PW = 2.0, PH = 4.15, PR = .32;
+function rr(w,h,r){
+  const s = new THREE.Shape(), x=-w/2, y=-h/2;
+  s.moveTo(x+r,y); s.lineTo(x+w-r,y); s.quadraticCurveTo(x+w,y,x+w,y+r);
+  s.lineTo(x+w,y+h-r); s.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+  s.lineTo(x+r,y+h); s.quadraticCurveTo(x,y+h,x,y+h-r);
+  s.lineTo(x,y+r); s.quadraticCurveTo(x,y,x+r,y); return s;
+}
+const phone = new THREE.Group();
+const bodyGeo = new THREE.ExtrudeGeometry(rr(PW,PH,PR), {depth:.14, bevelEnabled:true, bevelThickness:.04, bevelSize:.04, bevelSegments:4, curveSegments:12});
+bodyGeo.translate(0,0,-.07);
+const body = new THREE.Mesh(bodyGeo, new THREE.MeshStandardMaterial({color:'#0d2a4f', metalness:.75, roughness:.28}));
+phone.add(body);
+const SCW = 640, SCH = Math.round(640 * (PH-.16)/(PW-.16));
+const sc = document.createElement('canvas'); sc.width = SCW; sc.height = SCH;
+const sx = sc.getContext('2d');
+const screenTex = new THREE.CanvasTexture(sc);
+screenTex.encoding = THREE.sRGBEncoding;
+screenTex.anisotropy = 4;
+const screen = new THREE.Mesh(new THREE.PlaneGeometry(PW-.16, PH-.16), new THREE.MeshBasicMaterial({map:screenTex, transparent:true, toneMapped:false}));
+screen.position.z = .115;
+phone.add(screen);
+world.add(phone);
+let PS = 1.32; phone.scale.setScalar(PS);
+
+/* glow behind phone */
+const gc = document.createElement('canvas'); gc.width = gc.height = 256;
+const gx = gc.getContext('2d'); const gg = gx.createRadialGradient(128,128,0,128,128,128);
+gg.addColorStop(0,'rgba(45,212,191,.32)'); gg.addColorStop(.5,'rgba(45,212,191,.10)'); gg.addColorStop(1,'rgba(45,212,191,0)');
+gx.fillStyle = gg; gx.fillRect(0,0,256,256);
+const glow = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(gc), depthWrite:false, transparent:true}));
+glow.scale.set(9,9,1); world.add(glow);
+const shc = document.createElement('canvas'); shc.width = shc.height = 128;
+const shx = shc.getContext('2d'); const shg = shx.createRadialGradient(64,64,0,64,64,64);
+shg.addColorStop(0,'rgba(11,46,89,.28)'); shg.addColorStop(1,'rgba(11,46,89,0)'); shx.fillStyle = shg; shx.fillRect(0,0,128,128);
+const shadow = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(shc), depthWrite:false, transparent:true}));
+shadow.scale.set(3.4,.7,1); world.add(shadow);
+
+/* particles */
+const PN = 900, pp = new Float32Array(PN*3);
+for (let i=0;i<PN;i++){ pp[i*3]=(Math.random()-.5)*30; pp[i*3+1]=(Math.random()-.5)*34; pp[i*3+2]=-Math.random()*16-2; }
+const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pp,3));
+const dots = new THREE.Points(pg, new THREE.PointsMaterial({color:'#0E8C7F', size:.045, transparent:true, opacity:.35, depthWrite:false}));
+scene.add(dots);
+
+/* ---------- phone screens (drawn in 2D) ---------- */
+const NAVY='#0B2E59', TEAL='#0E8C7F', TL='#2DD4BF', MINT='#E6F7F5', INK='#0F172A', MUT='#64748b';
+const F = w => `${w} ${'px'} Heebo, Arial, sans-serif`;
+function font(sz, wt){ sx.font = `${wt||400} ${sz}px Heebo, "Arial Hebrew", Arial, sans-serif`; }
+function rrect(x,y,w,h,r,fill){ sx.beginPath(); sx.roundRect ? sx.roundRect(x,y,w,h,r) : (sx.rect(x,y,w,h)); sx.fillStyle=fill; sx.fill(); }
+function txt(t,x,y,sz,wt,c,align){ font(sz,wt); sx.fillStyle=c; sx.textAlign=align||'right'; sx.direction='rtl'; sx.fillText(t,x,y); }
+function statusBar(dark){
+  txt('9:41', 48, 52, 26, 700, dark?'#fff':INK, 'left');
+  rrect(SCW/2-70, 22, 140, 38, 19, '#000');
+}
+const R = SCW - 44; // right margin for RTL
+const screens = [
+  // 0 hero
+  function(){
+    const g = sx.createLinearGradient(0,0,0,SCH); g.addColorStop(0,'#0E8C7F'); g.addColorStop(1,'#0B2E59');
+    sx.fillStyle=g; sx.fillRect(0,0,SCW,SCH); statusBar(true);
+    sx.save(); sx.translate(SCW/2, SCH*.40); sx.strokeStyle='#fff'; sx.lineCap='round'; sx.lineWidth=16;
+    sx.beginPath(); sx.moveTo(-60,140); sx.lineTo(-60,-140); sx.moveTo(60,140); sx.lineTo(60,-140); sx.stroke();
+    sx.strokeStyle='#BDF5EC'; [100,30,-40,-110].forEach(y=>{sx.beginPath();sx.moveTo(-60,y);sx.lineTo(60,y);sx.stroke();}); sx.restore();
+    txt('סולם', SCW/2, SCH*.66, 110, 900, '#fff', 'center');
+    txt('טכנולוגיה, שלב אחרי שלב.', SCW/2, SCH*.66+70, 34, 400, '#c8f3ec', 'center');
+  },
+  // 1 dashboard
+  function(){
+    sx.fillStyle='#F4F8FB'; sx.fillRect(0,0,SCW,SCH); statusBar(false);
+    txt('דשבורד המועצה', R, 150, 46, 800, NAVY);
+    txt('עודכן לפני דקה', R, 196, 26, 400, MUT);
+    const k=[['פניות היום','128'],['טופלו','91%'],['זמן טיפול','3.2 ש׳']];
+    k.forEach((v,i)=>{ const x = R - (i+1)*176 + 4; rrect(x, 230, 164, 150, 22, '#fff');
+      txt(v[1], x+150, 310, 48, 900, i===1?TEAL:NAVY); txt(v[0], x+150, 352, 22, 400, MUT); });
+    rrect(44, 410, SCW-88, 470, 26, '#fff');
+    txt('פניות לפי חודש', R-20, 466, 28, 700, INK);
+    const bars=[42,58,51,70,64,88,79,96];
+    bars.forEach((b,i)=>{ const bw=46, gap=20, x = SCW-88 - i*(bw+gap) - bw; const h=b*3.3;
+      rrect(x, 850-h, bw, h, 10, i===bars.length-1?TEAL:'#bfe8e2'); });
+    rrect(44, 910, SCW-88, 300, 26, '#fff');
+    txt('מוקדים חמים', R-20, 966, 28, 700, INK);
+    [['תאורת רחוב',.82],['פינוי גזם',.64],['מפגעי כביש',.41]].forEach((r,i)=>{ const y=1010+i*62;
+      txt(r[0], R-20, y+20, 24, 400, MUT); rrect(80, y, 300, 24, 12, MINT); rrect(80+300*(1-r[1]), y, 300*r[1], 24, 12, TEAL); });
+  },
+  // 2 resident website
+  function(){
+    sx.fillStyle='#fff'; sx.fillRect(0,0,SCW,SCH); statusBar(false);
+    rrect(40, 84, SCW-80, 56, 28, '#eef3f7'); txt('🔒 events.moatza.co.il', SCW/2, 122, 24, 500, MUT, 'center');
+    const g = sx.createLinearGradient(0,160,0,520); g.addColorStop(0,'#0E8C7F'); g.addColorStop(1,'#0B2E59');
+    rrect(40, 160, SCW-80, 360, 34, g);
+    txt('מה קורה במועצה', R-30, 270, 52, 800, '#fff'); txt('כל האירועים, החוגים והטפסים', R-30, 322, 28, 400, '#cdeee9');
+    rrect(R-30-230, 380, 230, 80, 40, '#fff'); txt('לכל האירועים', R-30-115, 432, 28, 800, NAVY, 'center');
+    const tiles=[['אירועים','#1b6fb3'],['חוגים',TEAL],['טפסים',NAVY],['עדכונים','#d4731c']];
+    tiles.forEach((t,i)=>{ const w=(SCW-80-24*3)/4; const x = SCW-40-w-i*(w+24);
+      rrect(x, 560, w, 150, 26, '#f3f8fb'); rrect(x+w/2-30, 584, 60, 60, 18, t[1]); txt(t[0], x+w/2, 686, 24, 700, INK, 'center'); });
+    txt('השבוע', R, 780, 34, 800, NAVY);
+    [['הדלקת נרות בכיכר','ה׳ · 17:30','#f2a33a'],['חוג רובוטיקה, הרשמה','נותרו 4 מקומות',TEAL],['טופס בקשה לתו חניה','מקוון, 2 דקות','#1b6fb3']].forEach((e,i)=>{ const y=810+i*130;
+      rrect(40, y, SCW-80, 110, 24, '#f8fafc'); rrect(R-14-70, y+20, 70, 70, 18, e[2]);
+      txt(e[0], R-110, y+52, 28, 700, INK); txt(e[1], R-110, y+88, 23, 400, MUT); });
+  },
+  // 3 automation
+  function(){
+    sx.fillStyle='#0d2240'; sx.fillRect(0,0,SCW,SCH); statusBar(true);
+    txt('אוטומציה פעילה', R, 150, 46, 800, '#fff'); txt('רצה 312 פעמים החודש', R, 196, 26, 400, '#8fb3cf');
+    const nodes=[['טופס נשלח באתר','#1b6fb3'],['נרשם בטבלת הפניות',TEAL],['הודעה לצוות בוואטסאפ','#25a35a'],['עדכון לתושב: התקבל ✓','#c58a12']];
+    nodes.forEach((n,i)=>{ const y=280+i*230;
+      rrect(70, y, SCW-140, 150, 30, '#13305a');
+      rrect(SCW-70-24-80, y+35, 80, 80, 22, n[1]);
+      txt(n[0], SCW-70-24-80-24, y+90, 31, 700, '#fff');
+      if (i<nodes.length-1){ sx.strokeStyle=TL; sx.lineWidth=6; sx.setLineDash([12,12]); sx.beginPath(); sx.moveTo(SCW-70-64, y+150); sx.lineTo(SCW-70-64, y+230); sx.stroke(); sx.setLineDash([]); }
+    });
+  },
+  // 4 event page
+  function(){
+    const g = sx.createLinearGradient(0,0,SCW,SCH*.5); g.addColorStop(0,'#1b6fb3'); g.addColorStop(1,'#0B2E59');
+    sx.fillStyle='#fff'; sx.fillRect(0,0,SCW,SCH); sx.fillStyle=g; sx.fillRect(0,0,SCW,560); statusBar(true);
+    txt('יום העצמאות', R, 250, 66, 900, '#fff'); txt('בפארק העירוני · 19:30', R, 310, 32, 400, '#d4e4f5');
+    for(let i=0;i<26;i++){ sx.fillStyle=['#2DD4BF','#ffffff','#7fb8ff'][i%3]; sx.globalAlpha=.8; sx.beginPath(); sx.arc(60+((i*97)%520), 360+((i*53)%160), 6+(i%3)*3, 0, 7); sx.fill(); }
+    sx.globalAlpha=1;
+    rrect(44, 600, SCW-88, 200, 30, MINT);
+    txt('נרשמו עד עכשיו', R-28, 670, 28, 500, MUT); txt('2,847', R-28, 760, 84, 900, NAVY);
+    txt('+214 היום', 90, 760, 30, 700, TEAL, 'left');
+    rrect(44, 840, SCW-88, 110, 30, '#f1f5f9'); txt('שם מלא', R-28, 905, 28, 400, MUT);
+    rrect(44, 970, SCW-88, 110, 30, '#f1f5f9'); txt('מספר משתתפים', R-28, 1035, 28, 400, MUT);
+    rrect(44, 1110, SCW-88, 110, 55, TEAL); txt('נרשמים', SCW/2, 1178, 36, 800, '#fff', 'center');
+  },
+  // 5 whatsapp bot (interactive)
+  function(){
+    sx.fillStyle='#ECE5DD'; sx.fillRect(0,0,SCW,SCH);
+    rrect(0,0,SCW,190,0,'#075E54'); statusBar(true);
+    rrect(R-70, 100, 70, 70, 35, TEAL); txt('ס', R-35, 150, 40, 800, '#fff', 'center');
+    txt('המועצה (בוט רשמי)', R-90, 132, 30, 700, '#fff'); txt('מחובר', R-90, 166, 22, 400, '#cfe9e4');
+    const el = performance.now() - botStart;
+    const msgs = [[1,'שלום! אני הבוט הרשמי של המועצה. בחרו שאלה מהכפתורים ליד הטלפון 👇']];
+    botLog.forEach((q,i)=>{
+      const last = i === botLog.length - 1;
+      msgs.push([0, CHIPS[CHIPS.length-1][q][1]]);
+      if (!last || el > 1500) msgs.push([1, BOT_A[q]]);
+      else if (el > 500) msgs.push([2, '']);
+    });
+    let y=230;
+    msgs.forEach(m=>{
+      if (m[0]===2){ rrect(40, y, 130, 70, 22, '#fff'); for(let k=0;k<3;k++){ sx.globalAlpha=.35+.65*Math.abs(Math.sin(el/220 + k)); sx.fillStyle=MUT; sx.beginPath(); sx.arc(76+k*28, y+35, 9, 0, 7); sx.fill(); } sx.globalAlpha=1; y+=92; return; }
+      font(28,400); const words=m[1].split(' '); const lines=[]; let cur='';
+      words.forEach(w=>{ const t=cur?cur+' '+w:w; if (sx.measureText(t).width>400){lines.push(cur);cur=w;} else cur=t; }); lines.push(cur);
+      const h=lines.length*40+34; const w=Math.max(...lines.map(l=>sx.measureText(l).width))+48;
+      const x = m[0]===0 ? SCW-40-w : 40;
+      rrect(x, y, w, h, 22, m[0]===0?'#DCF8C6':'#fff');
+      lines.forEach((l,i)=>txt(l, x+w-24, y+46+i*40, 28, 400, INK));
+      y += h + 20;
+    });
+    rrect(30, SCH-120, SCW-150, 80, 40, '#fff'); txt('הקלידו הודעה', SCW-150, SCH-68, 26, 400, MUT);
+    rrect(SCW-104, SCH-120, 80, 80, 40, '#128C7E');
+  }
+];
+function drawScreen(c){
+  const i = Math.floor(c), f = c - i;
+  sx.save(); sx.clearRect(0,0,SCW,SCH);
+  sx.beginPath(); sx.roundRect ? sx.roundRect(0,0,SCW,SCH,70) : sx.rect(0,0,SCW,SCH); sx.clip();
+  screens[Math.min(i, screens.length-1)]();
+  const blend = clamp((f - .55) / .3, 0, 1);
+  if (blend > 0 && i+1 < screens.length){ sx.globalAlpha = blend; screens[i+1](); sx.globalAlpha = 1; }
+  sx.restore();
+  screenTex.needsUpdate = true;
+}
+
+/* ---------- loop ---------- */
+let target = stageProgress(), p = target, lastBuilt = -1, lastScreen = -1;
+addEventListener('scroll', ()=>{ target = stageProgress(); }, {passive:true});
+function resize(){
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize); resize();
+
+const clock = new THREE.Clock();
+function frame(){
+  const t = clock.getElapsedTime();
+  p += (target - p) * (reduce ? 1 : .085);
+  if (Math.abs(target - p) < 1e-4) p = target;
+  const c = p * N_CH;
+  updateChapters(p);
+
+  const P = ladderParams(p, t);
+  const climb = ease(p);
+  const lit = .12 + climb * .78;
+  if (Math.abs(p - lastBuilt) > .0008 || !reduce) { buildLadder(P, lit); lastBuilt = p; }
+
+  // phone climbs the ladder
+  const s = .2 + climb * .62;
+  const py = (s - .5) * L;
+  const bob = (reduce || window.__sulamStill) ? 0 : Math.sin(t * 1.3) * .12;
+  const narrow = mob();
+  const halfW = 11 * Math.tan(THREE.MathUtils.degToRad(camera.fov/2)) * camera.aspect;
+  const xOff = narrow ? 0 : -Math.min(3.6, halfW * .47);
+  world.position.x = xOff;
+  phone.position.set(Math.sin(s*Math.PI) * P.bend * .55, py + bob, .4);
+  PS = narrow ? 1.15 : 1.32; phone.scale.setScalar(PS);
+  phone.rotation.y = .36 + Math.sin(p * Math.PI * 2) * .12 + (reduce?0:Math.sin(t*.6)*.04);
+  phone.rotation.x = -.06 + (reduce?0:Math.sin(t*.9)*.03);
+  phone.rotation.z = -.05 + climb * .08;
+  glow.position.set(phone.position.x, phone.position.y, -1.2);
+  shadow.position.set(phone.position.x, phone.position.y - PH*PS/2 - .55 - bob*.6, .2);
+  shadow.material.opacity = .8 - bob * 2;
+  rim.position.set(phone.position.x + 2.5, phone.position.y + 1, 2.5);
+
+  const dist = narrow ? 13.5 : 11;
+  camera.position.set(Math.sin(p*Math.PI) * 1.4, py + (narrow? -1.1 : .2) + Math.sin(p*Math.PI*2)*.4, dist);
+  camera.lookAt(phone.position.x * .3, py + (narrow ? -1.1 : 0), 0);
+
+  dots.rotation.y = reduce ? 0 : t * .015;
+  dots.position.y = -p * 4;
+
+  const sIdx = Math.round(c * 40) / 40;
+  const botAnim = c > N_CH - .5 && performance.now() - botStart < 1900;
+  if (sIdx !== lastScreen || botAnim) { drawScreen(Math.min(c, N_CH)); lastScreen = sIdx; }
+
+  world.updateMatrixWorld();
+  const v = new THREE.Vector3(); phone.getWorldPosition(v);
+  const top = v.clone().add(new THREE.Vector3(0, PH*PS/2, 0)).project(camera);
+  v.project(camera);
+  const sx0 = (v.x * .5 + .5) * innerWidth, sy0 = (-v.y * .5 + .5) * innerHeight;
+  const phPx = Math.abs(((-top.y * .5 + .5) * innerHeight) - sy0) * 2;
+  placeChips(Math.min(c, N_CH), sx0, sy0, phPx, t);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+const go = () => { drawScreen(0); requestAnimationFrame(frame); };
+(document.fonts && document.fonts.ready) ? document.fonts.ready.then(go) : go();
+document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', ()=>{ lastScreen = -1; });
+})();
+</script>
+
+</body>
+</html>

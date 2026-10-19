@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>סולם · ניהול פניות</title>
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Heebo:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0B2E59; --teal:#0E8C7F; --teal-light:#2DD4BF; --mint:#E6F7F5; --bg:#F8FAFC; --surface:#fff;
+  --fg:#0F172A; --muted:#475569; --line:#E2E8F0;
+  --new:#2563EB; --contacted:#B7791F; --meeting:#7C3AED; --won:#0E8C7F; --lost:#94A3B8;
+  --display:'Fredoka','Heebo',Arial,sans-serif; --font:'Heebo','Arial Hebrew',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 var(--font)}
+[hidden]{display:none!important}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--teal-light);outline-offset:2px;border-radius:8px}
+.wrap{max-width:1240px;margin-inline:auto;padding-inline:max(16px, env(safe-area-inset-left,0px))}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;border-radius:999px;padding:10px 18px;font-weight:700;cursor:pointer;text-decoration:none}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--navy)}
+.btn-wa{background:#25D366;color:#fff}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* login */
+.login{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(80% 60% at 70% 20%, var(--mint), transparent 60%), var(--bg)}
+.login-card{width:min(420px,100%);background:#fff;border-radius:28px;padding:32px;box-shadow:0 40px 80px -40px rgba(11,46,89,.45);display:grid;gap:14px}
+.login-card img{height:56px;justify-self:start}
+.login-card h1{font-family:var(--display);color:var(--navy);margin:6px 0 0;font-size:1.8rem}
+label{display:grid;gap:6px;font-weight:500}
+input,select,textarea{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--teal)}
+.err{color:#B91C1C;margin:0;font-weight:500}
+.hint{color:var(--muted);font-size:.88rem;margin:0}
+
+/* app */
+header.bar{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+header.bar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:12px}
+header.bar img{height:42px;display:block}
+.who{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9rem}
+main{padding-block:28px 60px;display:grid;gap:22px}
+.title{display:flex;justify-content:space-between;align-items:end;gap:16px;flex-wrap:wrap}
+.title h1{font-family:var(--display);color:var(--navy);margin:0;font-size:2.2rem}
+.live{display:inline-flex;align-items:center;gap:8px;color:var(--teal);font-weight:700;font-size:.9rem}
+.live i{width:9px;height:9px;border-radius:50%;background:var(--teal-light);box-shadow:0 0 0 0 rgba(45,212,191,.6);animation:ping 2s infinite}
+@keyframes ping{70%{box-shadow:0 0 0 10px rgba(45,212,191,0)}100%{box-shadow:0 0 0 0 rgba(45,212,191,0)}}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 18px}
+.kpi b{display:block;font-family:var(--display);font-size:2.2rem;color:var(--navy);line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:.9rem}
+.kpi.hot{background:var(--navy);border-color:var(--navy)}
+.kpi.hot b{color:#fff}.kpi.hot span{color:#bcd0e6}
+.tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:7px 14px;font-weight:600;cursor:pointer;color:var(--muted)}
+.tab[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
+.tab em{font-style:normal;opacity:.7;margin-inline-start:4px;font-variant-numeric:tabular-nums}
+.search{display:flex;gap:8px;align-items:center}
+.search input{width:min(280px,60vw)}
+.list{display:grid;gap:12px}
+.lead{background:#fff;border:1px solid var(--line);border-radius:20px;padding:16px 18px;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,2fr) auto;gap:16px;align-items:start;border-inline-start:5px solid var(--c,var(--new))}
+.lead.fresh{animation:flash 2.4s ease}
+@keyframes flash{0%{background:var(--mint)}100%{background:#fff}}
+.lead h3{margin:0;font-size:1.1rem;color:var(--navy)}
+.lead .org{color:var(--muted);font-size:.92rem}
+.lead .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px;font-size:.86rem;color:var(--muted)}
+.lead .phone{direction:ltr;unicode-bidi:isolate;font-weight:700;color:var(--fg);font-variant-numeric:tabular-nums}
+.lead .msg{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.lead .msg.empty{color:var(--muted)}
+.lead textarea{margin-top:10px;min-height:40px;resize:vertical;font-size:.9rem;background:#f8fafc}
+.side{display:grid;gap:8px;justify-items:stretch;min-width:170px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.82rem;color:var(--c);background:color-mix(in srgb, var(--c) 12%, #fff);border-radius:999px;padding:3px 10px;justify-self:start}
+.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+.empty-state{background:#fff;border:1.5px dashed var(--line);border-radius:20px;padding:40px;text-align:center;color:var(--muted)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:999px;padding:10px 18px;font-weight:600;z-index:20}
+@media (max-width:860px){
+  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .lead{grid-template-columns:minmax(0,1fr)}
+  .side{min-width:0;grid-template-columns:1fr 1fr}
+  .side .pill{grid-column:1/-1}
+}
+</style>
+</head>
+<body>
+
+<section class="login" id="login" hidden>
+  <form class="login-card" id="login-form">
+    <img src="/assets/sulam-logo.svg" alt="סולם">
+    <h1>ניהול פניות</h1>
+    <label>מייל<input id="l-email" type="email" autocomplete="username" required dir="ltr"></label>
+    <label>סיסמה<input id="l-pass" type="password" autocomplete="current-password" required dir="ltr"></label>
+    <button class="btn btn-navy" type="submit" id="l-btn">כניסה</button>
+    <p class="err" id="l-err" role="alert" hidden></p>
+    <p class="hint">הכניסה רק למשתמשים שהוגדרו ב-Supabase.</p>
+  </form>
+</section>
+
+<section id="setup" class="login" hidden>
+  <div class="login-card">
+    <img src="/assets/sulam-logo.svg" alt="סולם">
+    <h1>חסרות הגדרות</h1>
+    <p>הדשבורד לא מוצא את פרטי Supabase. ב-Vercel, תחת Settings ← Environment Variables, הוסיפו את <b dir="ltr">SUPABASE_URL</b> ואת <b dir="ltr">SUPABASE_ANON_KEY</b>, ואז Redeploy.</p>
+  </div>
+</section>
+
+<div id="app" hidden>
+  <header class="bar">
+    <div class="wrap">
+      <a href="/" aria-label="לאתר"><img src="/assets/sulam-logo.svg" alt="סולם"></a>
+      <div class="who"><span id="who"></span><button class="btn btn-ghost" id="logout" type="button">יציאה</button></div>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="title">
+      <h1>פניות מהאתר</h1>
+      <span class="live"><i></i> מתעדכן בזמן אמת</span>
+    </div>
+    <div class="kpis">
+      <div class="kpi hot"><b id="k-new">0</b><span>חדשות, מחכות לטיפול</span></div>
+      <div class="kpi"><b id="k-week">0</b><span>פניות ב-7 הימים האחרונים</span></div>
+      <div class="kpi"><b id="k-open">0</b><span>בתהליך (דיברנו / פגישה)</span></div>
+      <div class="kpi"><b id="k-won">0</b><span>נסגרו כלקוחות</span></div>
+    </div>
+    <div class="tools">
+      <div class="tabs" id="tabs" role="group" aria-label="סינון לפי סטטוס"></div>
+      <div class="search">
+        <input id="q" type="search" placeholder="חיפוש שם, ארגון או טלפון" aria-label="חיפוש">
+        <button class="btn btn-ghost" id="csv" type="button">ייצוא לאקסל</button>
+      </div>
+    </div>
+    <div class="list" id="list"></div>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="/api/config"></script>
+<script>
+(function(){
+const STATUS = {
+  new:       {label:'חדשה',        c:'var(--new)'},
+  contacted: {label:'דיברנו',      c:'var(--contacted)'},
+  meeting:   {label:'נקבעה פגישה', c:'var(--meeting)'},
+  won:       {label:'לקוח',        c:'var(--won)'},
+  lost:      {label:'לא רלוונטי',  c:'var(--lost)'}
+};
+const $ = id => document.getElementById(id);
+const cfg = window.SULAM_CONFIG || {};
+if (!cfg.supabaseUrl || !cfg.supabaseAnonKey || !window.supabase) { $('setup').hidden = false; return; }
+const sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey);
+
+let leads = [], filter = 'all', query = '', channel = null;
+
+function toast(t){ const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 2200); }
+const fmt = ts => new Date(ts).toLocaleString('he-IL', {day:'2-digit', month:'2-digit', year:'2-digit', hour:'2-digit', minute:'2-digit'});
+function ago(ts){ const m = Math.round((Date.now() - new Date(ts)) / 60000);
+  if (m < 1) return 'עכשיו'; if (m < 60) return `לפני ${m} דק׳`; const h = Math.round(m/60); if (h < 24) return `לפני ${h} שע׳`; const d = Math.round(h/24); return `לפני ${d} ימים`; }
+function intl(p){ let d = String(p||'').replace(/\D/g,''); if (d.startsWith('0')) d = '972' + d.slice(1); return d; }
+function waLink(l){ const t = `היי ${l.name}, כאן נועם מסולם 👋 קיבלנו את הפנייה שלך מהאתר${l.org ? ' (' + l.org + ')' : ''}. מתי נוח לדבר?`; return `https://wa.me/${intl(l.phone)}?text=${encodeURIComponent(t)}`; }
+
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  if (!session) { $('login').hidden = false; $('app').hidden = true; return; }
+  $('login').hidden = true; $('app').hidden = false;
+  $('who').textContent = session.user.email;
+  await load();
+  subscribe();
+}
+
+$('login-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('l-err').hidden = true; $('l-btn').disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email: $('l-email').value.trim(), password: $('l-pass').value });
+  $('l-btn').disabled = false;
+  if (error) { $('l-err').textContent = 'המייל או הסיסמה לא נכונים.'; $('l-err').hidden = false; return; }
+  boot();
+});
+$('logout').addEventListener('click', async () => { if (channel) sb.removeChannel(channel); await sb.auth.signOut(); location.reload(); });
+
+async function load(){
+  const { data, error } = await sb.from('leads').select('*').order('created_at', { ascending:false }).limit(1000);
+  if (error) { $('list').innerHTML = '<div class="empty-state">לא הצלחנו לטעון את הפניות. בדקו שהמייל שלכם רשום בטבלת admins.</div>'; return; }
+  leads = data || [];
+  render();
+}
+
+function subscribe(){
+  channel = sb.channel('leads-live')
+    .on('postgres_changes', { event:'INSERT', schema:'public', table:'leads' }, p => { leads.unshift(p.new); render(p.new.id); toast(`פנייה חדשה: ${p.new.name}`); })
+    .on('postgres_changes', { event:'UPDATE', schema:'public', table:'leads' }, p => { const i = leads.findIndex(l => l.id === p.new.id); if (i > -1) { leads[i] = p.new; render(); } })
+    .subscribe();
+}
+
+async function save(id, patch){
+  const i = leads.findIndex(l => l.id === id); const before = leads[i];
+  leads[i] = { ...before, ...patch }; render();
+  const { error } = await sb.from('leads').update(patch).eq('id', id);
+  if (error) { leads[i] = before; render(); toast('השמירה נכשלה, נסו שוב'); } else toast('נשמר');
+}
+
+function counts(){
+  const c = { all: leads.length }; Object.keys(STATUS).forEach(k => c[k] = leads.filter(l => l.status === k).length); return c;
+}
+function renderTabs(){
+  const c = counts(); const tabs = $('tabs'); tabs.innerHTML = '';
+  [['all','הכל'], ...Object.entries(STATUS).map(([k,v]) => [k, v.label])].forEach(([k, label]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'tab'; b.setAttribute('aria-pressed', String(filter === k));
+    b.innerHTML = `${label}<em>${c[k]}</em>`; b.onclick = () => { filter = k; render(); }; tabs.appendChild(b);
+  });
+}
+function render(freshId){
+  const week = Date.now() - 7 * 864e5;
+  $('k-new').textContent = leads.filter(l => l.status === 'new').length;
+  $('k-week').textContent = leads.filter(l => new Date(l.created_at) > week).length;
+  $('k-open').textContent = leads.filter(l => l.status === 'contacted' || l.status === 'meeting').length;
+  $('k-won').textContent = leads.filter(l => l.status === 'won').length;
+  renderTabs();
+  const q = query.toLowerCase();
+  const rows = leads.filter(l => (filter === 'all' || l.status === filter) && (!q || [l.name, l.org, l.phone, l.msg].join(' ').toLowerCase().includes(q)));
+  const list = $('list'); list.innerHTML = '';
+  if (!rows.length) {
+    list.innerHTML = `<div class="empty-state">${leads.length ? 'אין פניות שמתאימות לסינון.' : 'עוד אין פניות. כשמישהו ימלא את הטופס באתר, הפנייה תופיע כאן מיד.'}</div>`;
+    return;
+  }
+  rows.forEach(l => {
+    const st = STATUS[l.status] || STATUS.new;
+    const el = document.createElement('article'); el.className = 'lead' + (l.id === freshId ? ' fresh' : ''); el.style.setProperty('--c', st.c);
+    el.innerHTML = `
+      <div>
+        <h3></h3><div class="org"></div>
+        <div class="meta"><span class="phone"></span><span title="${fmt(l.created_at)}">${ago(l.created_at)}</span></div>
+      </div>
+      <div><p class="msg"></p><textarea placeholder="הערות פנימיות (נשמר כשיוצאים מהשדה)" aria-label="הערות"></textarea></div>
+      <div class="side">
+        <span class="pill" style="--c:${st.c}">${st.label}</span>
+        <select aria-label="סטטוס">${Object.entries(STATUS).map(([k,v]) => `<option value="${k}" ${k === l.status ? 'selected' : ''}>${v.label}</option>`).join('')}</select>
+        <a class="btn btn-wa" target="_blank" rel="noopener">וואטסאפ</a>
+        <a class="btn btn-ghost">התקשרות</a>
+      </div>`;
+    el.querySelector('h3').textContent = l.name;
+    el.querySelector('.org').textContent = l.org || '—';
+    el.querySelector('.phone').textContent = l.phone;
+    const m = el.querySelector('.msg'); m.textContent = l.msg || 'לא נכתבה הודעה'; if (!l.msg) m.classList.add('empty');
+    const ta = el.querySelector('textarea'); ta.value = l.notes || '';
+    ta.addEventListener('change', () => save(l.id, { notes: ta.value }));
+    el.querySelector('select').addEventListener('change', e => save(l.id, { status: e.target.value }));
+    const wa = el.querySelector('.btn-wa'); wa.href = waLink(l);
+    wa.addEventListener('click', () => { if (l.status === 'new') save(l.id, { status:'contacted' }); });
+    el.querySelectorAll('.btn-ghost')[0].href = 'tel:' + String(l.phone).replace(/[^\d+]/g, '');
+    list.appendChild(el);
+  });
+}
+$('q').addEventListener('input', e => { query = e.target.value; render(); });
+$('csv').addEventListener('click', () => {
+  const head = ['תאריך','שם','ארגון','טלפון','הודעה','סטטוס','הערות'];
+  const esc = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const lines = [head.map(esc).join(',')].concat(leads.map(l => [fmt(l.created_at), l.name, l.org, l.phone, l.msg, (STATUS[l.status]||{}).label, l.notes].map(esc).join(',')));
+  const blob = new Blob(['﻿' + lines.join('\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `sulam-leads-${new Date().toISOString().slice(0,10)}.csv`; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+});
+setInterval(() => { if (!$('app').hidden) render(); }, 60000);
+sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT') { $('app').hidden = true; $('login').hidden = false; } });
+boot();
+})();
+</script>
+</body>
+</html>

@@ -96,6 +96,40 @@ button.chip i{background:#25D366}
 .no-webgl .stage{height:auto}
 .no-webgl .pin{position:relative;height:auto;padding-block:120px 60px}
 .no-webgl .chap{position:relative;top:auto;transform:none!important;opacity:1!important;margin-block:40px}
+.m-only{display:none}
+
+/* ---------- phone layout (no scroll animation) ---------- */
+@media (max-width: 760px){
+  .m-static .m-only{display:block}.m-static .d-only{display:none}
+  .m-static .stage{height:auto;background:#F4F8FB}
+  .m-static .pin{position:relative;height:auto;overflow:visible;padding:calc(84px + env(safe-area-inset-top,0px)) 0 40px}
+  .m-static .pin::after,.m-static .scroll-hint,.m-static .rungs,.m-static #scene,.m-static .chips{display:none}
+  .m-static .chapters{position:static;display:flex;flex-direction:column;gap:12px;padding-inline:16px}
+  .m-static .chap{position:relative;inset:auto;bottom:auto;width:auto;margin:0;visibility:visible!important;padding:18px;border-radius:20px;background:#fff;border:1px solid var(--line);box-shadow:none}
+  .m-static .chap .w{opacity:1;transform:none;transition:none}
+  .m-static .chap[data-k="0"]{background:transparent;border:0;padding:8px 0 24px}
+  .m-static .chap[data-k="0"] h1{font-size:2.5rem}
+  .m-static .chap[data-k="0"] .hero-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+  .m-static .chap[data-k="0"] .btn{min-height:52px;font-size:1.05rem}
+  .m-static .m-kicker{font-weight:700;font-size:.92rem;color:var(--teal);margin-top:28px}
+  .m-static .m-kicker + h2{font-family:var(--display);font-size:1.9rem;line-height:1.15;color:var(--navy);margin:4px 0 8px}
+  .m-static .chap .eyebrow{font-size:.95rem;margin-bottom:6px}
+  .m-static .chap h2{font-size:1.45rem;line-height:1.2}
+  .m-static .chap p{font-size:1rem;margin-top:6px;color:#475569}
+  /* availability: plain cards instead of the pinned clock */
+  .m-static .clock-stage{height:auto}
+  .m-static .clock-pin{position:relative;height:auto;padding-block:48px}
+  .m-static .clock{display:none}
+  .m-static .clock-cards{grid-template-columns:minmax(0,1fr)}
+  .m-static .clock-cards .bub{opacity:1;transform:none}
+  /* included: native swipe instead of the pinned track */
+  .m-static .incl-stage{height:auto}
+  .m-static .incl-pin{position:relative;height:auto;padding-block:48px}
+  .m-static .track{overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:12px;transform:none!important;-webkit-overflow-scrolling:touch}
+  .m-static .slide{scroll-snap-align:center;transform:none}
+  .m-static .incl-progress,.m-static .incl-count{display:none}
+  .m-static .marquee .mrow{animation-duration:80s}
+}
 
 @media (max-width: 760px){
   .stage{height:560vh}
@@ -110,7 +144,7 @@ button.chip i{background:#25D366}
   .rungs{display:none}
   /* blur over a live WebGL canvas is the #1 jank source on phones */
   .top,.chip,.chap{-webkit-backdrop-filter:none;backdrop-filter:none}
-  .top{background:rgba(255,255,255,.96)}
+  .top{background:#fff}
   .chap{background:rgba(255,255,255,.95)}
   .chip{background:#fff;box-shadow:0 10px 24px -14px rgba(11,46,89,.35);will-change:auto}
 }
@@ -382,6 +416,8 @@ footer .brand{color:#fff}
             <a class="btn btn-light" href="#how">איך זה עובד</a>
           </div>
         </div>
+        <div class="m-only m-kicker">מה אנחנו בונים</div>
+        <h2 class="m-only">חמישה דברים שמועצה צריכה</h2>
         <div class="chap" data-k="1">
           <div class="eyebrow"><i>1</i> דשבורדים</div>
           <h2>כל הנתונים במסך אחד</h2>
@@ -405,7 +441,8 @@ footer .brand{color:#fff}
         <div class="chap" data-k="5">
           <div class="eyebrow"><i>5</i> בוט וואטסאפ רשמי</div>
           <h2>בוט שעונה לתושבים 24/7</h2>
-          <p>נסו בעצמכם: <strong>לחצו על שאלה</strong> ליד הטלפון, ותראו מה הבוט עונה.</p>
+          <p class="d-only">נסו בעצמכם: <strong>לחצו על שאלה</strong> ליד הטלפון, ותראו מה הבוט עונה.</p>
+          <p class="m-only">עונה לתושבים 24/7 על ארנונה, אירועים ונהלים. כשהוא לא יודע, <strong>הוא מעביר לנציג.</strong></p>
         </div>
       </div>
       <div class="chips" aria-hidden="true"></div>
@@ -721,10 +758,13 @@ footer .brand{color:#fff}
   </div>
 </footer>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>if (!matchMedia('(max-width: 760px)').matches) document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');</script>
 <script>
 (function(){
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// phones get a plain, fast page: no 3D, no pinned scroll scenes
+const STATIC = matchMedia('(max-width: 760px)').matches;
+if (STATIC) document.documentElement.classList.add('m-static', 'no-webgl');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || STATIC;
 const stage = document.getElementById('stage');
 const chaps = [...document.querySelectorAll('.chap')];
 const rungUI = [...document.querySelectorAll('.rungs b')];

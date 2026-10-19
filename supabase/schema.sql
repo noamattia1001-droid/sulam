@@ -23,15 +23,21 @@ alter table public.leads  enable row level security;
 alter table public.admins enable row level security;
 
 -- רק מנהלים רשומים קוראים ומעדכנים פניות. האתר שומר פניות דרך השרת (service role), לכן אין הרשאת הוספה לציבור.
+create or replace function public.is_admin() returns boolean
+language sql stable security definer set search_path = public as $$
+  select exists (select 1 from public.admins where lower(email) = lower(auth.jwt() ->> 'email'));
+$$;
+grant execute on function public.is_admin() to authenticated;
+
 drop policy if exists "admins read leads"   on public.leads;
 drop policy if exists "admins update leads" on public.leads;
 drop policy if exists "admins delete leads" on public.leads;
-create policy "admins read leads"   on public.leads for select to authenticated using ((auth.jwt() ->> 'email') in (select email from public.admins));
-create policy "admins update leads" on public.leads for update to authenticated using ((auth.jwt() ->> 'email') in (select email from public.admins)) with check (true);
-create policy "admins delete leads" on public.leads for delete to authenticated using ((auth.jwt() ->> 'email') in (select email from public.admins));
+create policy "admins read leads"   on public.leads for select to authenticated using (public.is_admin());
+create policy "admins update leads" on public.leads for update to authenticated using (public.is_admin()) with check (true);
+create policy "admins delete leads" on public.leads for delete to authenticated using (public.is_admin());
 
 drop policy if exists "admins see admins" on public.admins;
-create policy "admins see admins" on public.admins for select to authenticated using ((auth.jwt() ->> 'email') in (select email from public.admins));
+create policy "admins see admins" on public.admins for select to authenticated using (public.is_admin());
 
 create or replace function public.touch_updated_at() returns trigger language plpgsql as $$
 begin new.updated_at = now(); return new; end $$;

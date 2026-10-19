@@ -101,6 +101,37 @@ button.chip i{background:#25D366}
 /* ---------- phone layout (no scroll animation) ---------- */
 @media (max-width: 760px){
   .m-static .m-only{display:block}.m-static .d-only{display:none}
+  /* tabs: one category on screen at a time */
+  .m-static body{padding-bottom:calc(72px + env(safe-area-inset-bottom,0px))}
+  .m-static .m-panel{display:none}
+  .m-static .m-panel.on{display:block}
+  .m-static .m-tabs{position:fixed;inset:auto 0 0;z-index:30;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:#fff;border-top:1px solid var(--line);padding:6px 4px calc(8px + env(safe-area-inset-bottom,0px))}
+  .m-static .m-tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:50px;text-decoration:none;font-size:.75rem;font-weight:600;color:#64748b}
+  .m-static .m-tabs a.on{color:var(--teal);font-weight:800}
+  .m-static .m-tabs svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+  .m-static .m-hero{padding-top:calc(84px + env(safe-area-inset-top,0px));padding-bottom:28px}
+  .m-static .m-svc{padding-top:calc(84px + env(safe-area-inset-top,0px));padding-bottom:12px;display:flex;flex-direction:column;gap:10px;background:#F4F8FB}
+  .m-static .m-panel > section.band{padding-top:calc(84px + env(safe-area-inset-top,0px));padding-bottom:32px}
+  .m-static .m-panel .clock-pin,.m-static .m-panel .incl-pin{padding-block:28px}
+  .m-static #m-process .clock-pin{padding-top:calc(84px + env(safe-area-inset-top,0px))}
+  .m-static #m-process #how{padding-top:12px}
+  .m-static .m-title{font-family:var(--display);font-size:1.9rem;line-height:1.15;color:var(--navy);margin:0 0 4px}
+  /* no small labels above headings on phones */
+  .m-static .kicker,.m-static .chap .eyebrow i{display:none}
+  .m-static .chap .eyebrow{color:var(--navy);font-size:1.1rem;font-weight:800;letter-spacing:0;margin:0}
+  .m-static .chap .eyebrow + h2{font-family:var(--font);font-size:1rem;font-weight:500;color:#475569;margin-top:2px}
+  /* whatsapp bot demo */
+  .m-static .m-bot{margin-top:20px;border-radius:22px;overflow:hidden;border:1px solid #d9e3dc;background:#ECE5DD}
+  .mb-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#075E54;color:#fff}
+  .mb-head b{display:block;font-size:.95rem;line-height:1.2}.mb-head small{color:#cfe9e4;font-size:.75rem}
+  .mb-av{width:34px;height:34px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font-weight:800}
+  .mb-chat{padding:12px;display:flex;flex-direction:column;gap:8px;min-height:140px;max-height:260px;overflow-y:auto}
+  .mb-msg{align-self:flex-end;max-width:84%;background:#fff;border-radius:12px;padding:7px 11px;font-size:.92rem;line-height:1.45;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+  .mb-msg.me{align-self:flex-start;background:#DCF8C6}
+  .mb-msg.typing{color:#64748b;letter-spacing:.2em}
+  .mb-qs{display:flex;flex-direction:column;gap:8px;padding:0 12px 12px}
+  .mb-qs button{min-height:44px;border-radius:14px;border:1.5px solid var(--teal);background:#fff;color:var(--navy);font:700 .95rem var(--font);text-align:right;padding:0 14px;cursor:pointer}
+  .mb-qs button[disabled]{opacity:.45}
   .m-static .stage{height:auto;background:#F4F8FB}
   .m-static .pin{position:relative;height:auto;overflow:visible;padding:calc(84px + env(safe-area-inset-top,0px)) 0 40px}
   .m-static .pin::after,.m-static .scroll-hint,.m-static .rungs,.m-static #scene,.m-static .chips{display:none}
@@ -119,7 +150,8 @@ button.chip i{background:#25D366}
   /* availability: plain cards instead of the pinned clock */
   .m-static .clock-stage{height:auto}
   .m-static .clock-pin{position:relative;height:auto;padding-block:48px}
-  .m-static .clock{display:none}
+  .m-static .clock{display:block;max-height:280px;margin:6px auto 4px}
+  .m-static .clock-cards{margin-top:8px}
   .m-static .clock-cards{grid-template-columns:minmax(0,1fr)}
   .m-static .clock-cards .bub{opacity:1;transform:none}
   /* included: native swipe instead of the pinned track */
@@ -416,8 +448,7 @@ footer .brand{color:#fff}
             <a class="btn btn-light" href="#how">איך זה עובד</a>
           </div>
         </div>
-        <div class="m-only m-kicker">מה אנחנו בונים</div>
-        <h2 class="m-only">חמישה דברים שמועצה צריכה</h2>
+        <h2 class="m-only m-title">מה אנחנו בונים</h2>
         <div class="chap" data-k="1">
           <div class="eyebrow"><i>1</i> דשבורדים</div>
           <h2>כל הנתונים במסך אחד</h2>
@@ -624,6 +655,26 @@ footer .brand{color:#fff}
   </section>
 </main>
 
+<div class="m-only m-bot" id="m-bot" aria-label="הדמיית בוט וואטסאפ">
+  <div class="mb-head"><span class="mb-av" aria-hidden="true">ס</span><div><b>המועצה (בוט רשמי)</b><small>מחובר</small></div></div>
+  <div class="mb-chat" id="mb-chat" aria-live="polite">
+    <div class="mb-msg">שלום! אני הבוט של המועצה. בחרו שאלה 👇</div>
+  </div>
+  <div class="mb-qs" id="mb-qs">
+    <button type="button" data-q="0">מתי פינוי האשפה?</button>
+    <button type="button" data-q="1">איך משלמים ארנונה?</button>
+    <button type="button" data-q="2">יש בור בכביש, מה עושים?</button>
+  </div>
+</div>
+
+<nav class="m-only m-tabs" id="m-tabs" aria-label="ניווט באתר">
+  <a href="#m-home" data-tab="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-7 9 7v9H3z"/></svg>בית</a>
+  <a href="#m-services" data-tab="services"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg>מה בונים</a>
+  <a href="#m-process" data-tab="process"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>איך עובדים</a>
+  <a href="#m-price" data-tab="price"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v10H4z"/><circle cx="12" cy="12" r="2.5"/></svg>מחיר</a>
+  <a href="#m-contact" data-tab="contact"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg>צרו קשר</a>
+</nav>
+
 <div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="הגדרות נגישות" hidden>
   <div class="a11y-head"><b>הגדרות נגישות</b><button type="button" class="x" id="a11y-close" aria-label="סגירה">×</button></div>
   <div class="a11y-grid">
@@ -765,6 +816,46 @@ footer .brand{color:#fff}
 const STATIC = matchMedia('(max-width: 760px)').matches;
 if (STATIC) document.documentElement.classList.add('m-static', 'no-webgl');
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || STATIC;
+if (STATIC) {
+  const main = document.querySelector('main'), $ = q => document.querySelector(q);
+  const panel = (id, nodes) => { const d = document.createElement('div'); d.className = 'm-panel'; d.id = 'm-' + id; d.dataset.tab = id; nodes.forEach(n => n && d.appendChild(n)); main.appendChild(d); return d; };
+  const chs = [...document.querySelectorAll('.chap')];
+  const hero = document.createElement('section'); hero.className = 'wrap m-hero'; hero.appendChild(chs[0]); hero.appendChild($('#m-bot'));
+  const svc = document.createElement('section'); svc.className = 'wrap m-svc'; svc.appendChild($('.m-title')); chs.slice(1).forEach(c => svc.appendChild(c));
+  panel('home', [hero]);
+  panel('services', [svc, $('#incl')]);
+  panel('process', [$('#avail'), $('#how')]);
+  panel('price', [$('#price')]);
+  panel('contact', [$('#contact')]);
+  $('#stage').hidden = true;
+  const tabs = [...document.querySelectorAll('#m-tabs a')];
+  const show = (id, push) => {
+    const el = id && document.getElementById(id), p = el && (el.classList.contains('m-panel') ? el : el.closest('.m-panel'));
+    const target = p || document.getElementById('m-home');
+    document.querySelectorAll('.m-panel').forEach(x => x.classList.toggle('on', x === target));
+    tabs.forEach(a => { const on = a.dataset.tab === target.dataset.tab; a.classList.toggle('on', on); if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    window.scrollTo(0, 0);
+    if (push) history.replaceState(null, '', '#' + target.id);
+  };
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a[href^="#"]'); if (!a) return;
+    const el = document.getElementById(a.getAttribute('href').slice(1));
+    if (!el || !(el.classList.contains('m-panel') || el.closest('.m-panel'))) return;
+    e.preventDefault(); show(el.id, true);
+  });
+  show(location.hash.slice(1));
+  /* whatsapp bot demo */
+  const A = ['פינוי אשפה ברחוב האלון: ימים א׳ ו-ד׳, משעה 06:00. רוצים תזכורת בערב שלפני?', 'אפשר לשלם באתר המועצה, בהוראת קבע או במוקד. הנה קישור לתשלום ✓', 'שלחו כאן תמונה ומיקום, ונפתח פנייה למחלקת התשתיות. נעדכן כשיטופל.'];
+  const chat = $('#mb-chat'), qs = $('#mb-qs');
+  const say = (t, cls) => { const m = document.createElement('div'); m.className = 'mb-msg' + (cls ? ' ' + cls : ''); m.textContent = t; chat.appendChild(m); chat.scrollTop = chat.scrollHeight; return m; };
+  qs.addEventListener('click', e => {
+    const b = e.target.closest('button[data-q]'); if (!b) return;
+    qs.querySelectorAll('button').forEach(x => { x.disabled = true; });
+    say(b.textContent, 'me');
+    setTimeout(() => say('• • •', 'typing'), 350);
+    setTimeout(() => { const ty = chat.querySelector('.typing'); if (ty) ty.remove(); say(A[+b.dataset.q]); qs.querySelectorAll('button').forEach(x => { x.disabled = false; }); }, 1300);
+  });
+}
 const stage = document.getElementById('stage');
 const chaps = [...document.querySelectorAll('.chap')];
 const rungUI = [...document.querySelectorAll('.rungs b')];
@@ -857,7 +948,7 @@ function setHour(h){
 }
 function clockScroll(){
   const vb = innerWidth <= 860 ? '15 20 630 620' : '0 0 1000 640'; if (clockSvg.getAttribute('viewBox') !== vb) clockSvg.setAttribute('viewBox', vb);
-  if (reduce) { setHour(8.5); return; }
+  if (reduce) { setHour(STATIC ? 14 : 8.5); return; }
   const r = clockStage.getBoundingClientRect();
   if (r.bottom < -50 || r.top > innerHeight + 50) return;
   const q = Math.min(1, Math.max(0, -r.top / ((r.height - innerHeight) || 1)));

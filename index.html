@@ -764,7 +764,6 @@ applyA11y();
 const form = document.getElementById('contact-form'), note = document.getElementById('form-note');
 const thanks = document.getElementById('form-thanks');
 function showThanks(){ form.hidden = true; thanks.hidden = false; }
-try { if (localStorage.getItem('sulam-lead-sent')) showThanks(); } catch(e){}
 form.addEventListener('submit', async e => {
   e.preventDefault();
   const v = id => document.getElementById(id).value.trim();
@@ -776,7 +775,6 @@ form.addEventListener('submit', async e => {
   try {
     const r = await fetch('/api/lead', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(lead)});
     if (!r.ok) throw new Error(String(r.status));
-    try { localStorage.setItem('sulam-lead-sent', '1'); } catch(e){}
     form.reset(); showThanks(); thanks.focus();
   } catch(err) {
     note.textContent = 'השליחה לא עברה. נסו שוב בעוד רגע, או כתבו לנו בוואטסאפ.';

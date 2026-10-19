@@ -121,7 +121,16 @@ button.chip i{background:#25D366}
   .m-static .chap .eyebrow{color:var(--navy);font-size:1.1rem;font-weight:800;letter-spacing:0;margin:0}
   .m-static .chap .eyebrow + h2{font-family:var(--font);font-size:1rem;font-weight:500;color:#475569;margin-top:2px}
   /* whatsapp bot demo */
-  .m-static .m-bot{margin-top:20px;border-radius:22px;overflow:hidden;border:1px solid #d9e3dc;background:#ECE5DD}
+  .m-static .m-intro{margin-top:26px;padding-top:24px;border-top:1px solid var(--line)}
+  .m-intro h2{font-family:var(--display);font-size:1.6rem;line-height:1.2;color:var(--navy);margin:0}
+  .m-intro > p{margin:8px 0 0;color:#475569;font-size:1rem}
+  .m-gets{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:10px}
+  .m-gets li{background:#F4F8FB;border-radius:16px;padding:12px 14px}
+  .m-gets b{display:block;color:var(--navy);font-size:1.02rem}
+  .m-gets span{display:block;color:#475569;font-size:.95rem;margin-top:2px}
+  .m-static .m-more{display:flex;margin-top:16px;min-height:50px}
+  .mb-try{margin:0;padding:10px 14px;background:#fff;color:var(--navy);font-weight:700;font-size:.95rem}
+  .m-static .m-bot{margin-top:4px;border-radius:22px;overflow:hidden;border:1px solid #d9e3dc;background:#ECE5DD}
   .mb-head{display:flex;align-items:center;gap:10px;padding:10px 14px;background:#075E54;color:#fff}
   .mb-head b{display:block;font-size:.95rem;line-height:1.2}.mb-head small{color:#cfe9e4;font-size:.75rem}
   .mb-av{width:34px;height:34px;border-radius:50%;background:var(--teal);display:grid;place-items:center;font-weight:800}
@@ -655,7 +664,20 @@ footer .brand{color:#fff}
   </section>
 </main>
 
+<div class="m-only m-intro" id="m-intro">
+  <h2>צוות פיתוח שלם, במנוי חודשי אחד</h2>
+  <p>במקום לחפש ספק לכל פרויקט, לחכות להצעות מחיר ולשלם על כל שינוי קטן, כותבים לנו מה צריך. אנחנו מאפיינים, בונים, מעלים לאוויר וממשיכים ללוות.</p>
+  <ul class="m-gets">
+    <li><b>בונים כל מה שצריך</b><span>אתרים, דשבורדים, טפסים ואוטומציות, בלי הצעת מחיר לכל דבר.</span></li>
+    <li><b>בוט וואטסאפ רשמי</b><span>עונה לתושבים 24/7, וכשהוא לא יודע מעביר לנציג.</span></li>
+    <li><b>מהר</b><span>שינויים קטנים מוכנים תוך יום עבודה.</span></li>
+    <li><b>מחיר קבוע ושקוף</b><span>1,500 ₪ לחודש, בלי התחייבות. בנפרד משלמים רק על השרתים.</span></li>
+  </ul>
+  <a class="btn btn-light m-more" href="#m-services">ראו מה אנחנו בונים</a>
+</div>
+
 <div class="m-only m-bot" id="m-bot" aria-label="הדמיית בוט וואטסאפ">
+  <p class="mb-try">נסו בעצמכם: בחרו שאלה וראו מה הבוט עונה.</p>
   <div class="mb-head"><span class="mb-av" aria-hidden="true">ס</span><div><b>המועצה (בוט רשמי)</b><small>מחובר</small></div></div>
   <div class="mb-chat" id="mb-chat" aria-live="polite">
     <div class="mb-msg">שלום! אני הבוט של המועצה. בחרו שאלה 👇</div>
@@ -820,8 +842,8 @@ if (STATIC) {
   const main = document.querySelector('main'), $ = q => document.querySelector(q);
   const panel = (id, nodes) => { const d = document.createElement('div'); d.className = 'm-panel'; d.id = 'm-' + id; d.dataset.tab = id; nodes.forEach(n => n && d.appendChild(n)); main.appendChild(d); return d; };
   const chs = [...document.querySelectorAll('.chap')];
-  const hero = document.createElement('section'); hero.className = 'wrap m-hero'; hero.appendChild(chs[0]); hero.appendChild($('#m-bot'));
-  const svc = document.createElement('section'); svc.className = 'wrap m-svc'; svc.appendChild($('.m-title')); chs.slice(1).forEach(c => svc.appendChild(c));
+  const hero = document.createElement('section'); hero.className = 'wrap m-hero'; hero.appendChild(chs[0]); hero.appendChild($('#m-intro'));
+  const svc = document.createElement('section'); svc.className = 'wrap m-svc'; svc.appendChild($('.m-title')); chs.slice(1).forEach(c => svc.appendChild(c)); svc.appendChild($('#m-bot'));
   panel('home', [hero]);
   panel('services', [svc, $('#incl')]);
   panel('process', [$('#avail'), $('#how')]);

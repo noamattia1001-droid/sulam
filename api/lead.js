@@ -4,6 +4,7 @@
 //   CALLMEBOT_PHONE, CALLMEBOT_APIKEY                 (optional: WhatsApp alert to you)
 //   RESEND_API_KEY, NOTIFY_EMAIL, NOTIFY_FROM         (optional: email alert)
 //   SITE_URL                                          (optional: link to the dashboard in alerts)
+//   ZIV_WEBHOOK_URL, LEADS_API_KEY                    (optional: push each new lead to Ziv's dashboard)
 
 const clean = (v, max) => String(v ?? '').replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, max);
 
@@ -33,10 +34,12 @@ module.exports = async function handler(req, res) {
 
   const r = await fetch(`${url}/rest/v1/leads`, {
     method: 'POST',
-    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+    headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json', Prefer: 'return=representation' },
     body: JSON.stringify(lead),
   });
   if (!r.ok) return res.status(502).json({ error: 'save_failed' });
+
+  const saved = (await r.json().catch(() => []))[0] || lead;
 
   // notifications never block the visitor
   const site = process.env.SITE_URL || '';
@@ -56,6 +59,14 @@ module.exports = async function handler(req, res) {
         subject: `פנייה חדשה: ${lead.name}${lead.org ? ' · ' + lead.org : ''}`,
         text,
       }),
+    }));
+  }
+  if (process.env.ZIV_WEBHOOK_URL) {
+    jobs.push(fetch(process.env.ZIV_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${process.env.LEADS_API_KEY || ''}`, 'X-API-Key': process.env.LEADS_API_KEY || '' },
+      body: JSON.stringify({ event: 'lead.created', lead: saved }),
+      signal: AbortSignal.timeout(5000),
     }));
   }
   await Promise.allSettled(jobs);

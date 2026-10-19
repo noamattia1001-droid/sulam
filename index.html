@@ -30,7 +30,8 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;overflow-x:hidden}
+@supports (overflow:clip){html{overflow-x:clip}}
 body{direction:rtl;text-align:right;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:var(--step-0);line-height:1.6;margin:0}
 h1,h2,h3{text-wrap:balance;margin:0;line-height:1.1}
 a{color:inherit}
@@ -106,7 +107,12 @@ button.chip i{background:#25D366}
   .scroll-hint{display:none}
   .chip{font-size:.8rem;padding:8px 10px}
   .chip i{width:24px;height:24px}
-  .rungs{top:calc(90px + env(safe-area-inset-top,0px));transform:none}
+  .rungs{display:none}
+  /* blur over a live WebGL canvas is the #1 jank source on phones */
+  .top,.chip,.chap{-webkit-backdrop-filter:none;backdrop-filter:none}
+  .top{background:rgba(255,255,255,.96)}
+  .chap{background:rgba(255,255,255,.95)}
+  .chip{background:#fff;box-shadow:0 10px 24px -14px rgba(11,46,89,.35);will-change:auto}
 }
 
 /* ---------- content sections ---------- */
@@ -320,6 +326,7 @@ footer .brand{color:#fff}
 
 @media (max-width: 760px){
   .climb,.price,.contact-grid{grid-template-columns:minmax(0,1fr)}
+  .climb-head{position:static}
   .climb-head{position:static}
   .avail-grid{grid-template-columns:minmax(0,1fr)}
   form{grid-template-columns:minmax(0,1fr)}
@@ -556,7 +563,7 @@ footer .brand{color:#fff}
         <label>ארגון<input id="f-org" name="org" placeholder="למשל: מועצה מקומית" required></label>
         <label class="full">טלפון<input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" style="text-align:right" required></label>
         <label class="full">מה צריך?<textarea id="f-msg" name="msg"></textarea></label>
-        <input id="f-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+        <input id="f-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;inset-inline-start:0;top:0;width:1px;height:1px;opacity:0;overflow:hidden;clip-path:inset(50%);pointer-events:none">
         <div class="form-actions">
           <button class="btn btn-teal" type="submit">שליחה</button>
           <a class="btn btn-ghost" href="#contact">וואטסאפ</a>
@@ -761,13 +768,18 @@ form.addEventListener('submit', async e => {
   } finally { btn.disabled = false; }
 });
 
+/* ---------- one rAF-batched scroll pump for all section effects ---------- */
+const scrollJobs = []; let scrollQueued = false;
+function onScrollRaf(fn){ scrollJobs.push(fn); }
+addEventListener('scroll', () => { if (scrollQueued) return; scrollQueued = true; requestAnimationFrame(() => { scrollQueued = false; scrollJobs.forEach(f => f()); }); }, {passive:true});
+
 /* ---------- steps ladder in "how it works" ---------- */
 const steps = [...document.querySelectorAll('.step')];
 function litSteps(){
   const line = innerHeight * 0.72;
   steps.forEach(s => s.classList.toggle('lit', s.getBoundingClientRect().top < line));
 }
-addEventListener('scroll', litSteps, {passive:true}); litSteps();
+onScrollRaf(litSteps); litSteps();
 
 
 /* ---------- availability clock ---------- */
@@ -791,30 +803,34 @@ function setHour(h){
   co6.classList.toggle('on', on6); co8.classList.toggle('on', on8); mc6.classList.toggle('on', on6); mc8.classList.toggle('on', on8);
 }
 function clockScroll(){
-  clockSvg.setAttribute('viewBox', innerWidth <= 860 ? '15 20 630 620' : '0 0 1000 640');
+  const vb = innerWidth <= 860 ? '15 20 630 620' : '0 0 1000 640'; if (clockSvg.getAttribute('viewBox') !== vb) clockSvg.setAttribute('viewBox', vb);
   if (reduce) { setHour(8.5); return; }
   const r = clockStage.getBoundingClientRect();
+  if (r.bottom < -50 || r.top > innerHeight + 50) return;
   const q = Math.min(1, Math.max(0, -r.top / ((r.height - innerHeight) || 1)));
   setHour(Math.min(24, Math.max(0, (q - .04) / .9 * 24)));
 }
-addEventListener('scroll', clockScroll, {passive:true}); addEventListener('resize', clockScroll); clockScroll();
+onScrollRaf(clockScroll); addEventListener('resize', clockScroll); clockScroll();
 
 /* ---------- included: horizontal pinned track ---------- */
 const incl = document.getElementById('incl'), track = document.getElementById('track');
 const slides = [...track.children], inclN = document.getElementById('incl-n'), inclP = document.getElementById('incl-p');
 if (reduce) document.documentElement.classList.add('no-hpin');
+let slideBox = null; addEventListener('resize', () => { slideBox = null; });
 function hpin(){
   if (reduce) return;
   const r = incl.getBoundingClientRect();
+  if (r.bottom < -50 || r.top > innerHeight + 50) return;
   const q = Math.min(1, Math.max(0, -r.top / ((r.height - innerHeight) || 1)));
   const max = Math.max(0, track.scrollWidth - innerWidth);
   track.style.transform = 'translateX(' + (q * max) + 'px)';
   inclP.style.setProperty('--pp', q);
   inclN.textContent = Math.min(3, 1 + Math.round(q * 2));
   const cx = innerWidth / 2;
-  slides.forEach(sl => { const b = sl.getBoundingClientRect(); const d = Math.abs(b.left + b.width/2 - cx) / innerWidth; sl.style.setProperty('--sc', (1 - Math.min(.08, d * .12)).toFixed(3)); });
+  if (!slideBox) slideBox = slides.map(sl => ({l: sl.offsetLeft, w: sl.offsetWidth}));
+  slides.forEach((sl,i) => { const b = slideBox[i]; const d = Math.abs(b.l + b.w/2 + q * max - cx) / innerWidth; sl.style.setProperty('--sc', (1 - Math.min(.08, d * .12)).toFixed(3)); });
 }
-addEventListener('scroll', hpin, {passive:true}); addEventListener('resize', hpin); hpin();
+onScrollRaf(hpin); addEventListener('resize', hpin); hpin();
 
 /* ---------- price count-up ---------- */
 const pnum = document.getElementById('pnum');
@@ -865,19 +881,21 @@ const chipEls = CHIPS.map((pair,k) => pair.map((c,j) => {
   const d = document.createElement(ask ? 'button' : 'div'); d.className = 'chip' + (ask ? ' ask' : '');
   d.innerHTML = `<i>${c[0]}</i><div>${c[1]}<small>${c[2]}</small></div>`;
   if (ask) { d.type = 'button'; d.addEventListener('click', () => { botLog.push(j); botLog = botLog.slice(-2); botStart = performance.now(); d.classList.add('asked'); }); }
-  d.style.opacity = 0; chipBox.appendChild(d); return d;
+  d.style.opacity = 0; chipBox.appendChild(d); d._w = d.offsetWidth; d._h = d.offsetHeight; return d;
 }));
 const CHIP_OFF = [[-.92, -.5],[.48, .42],[-.92, .12]]; // relative to phone, in phone-heights
+let chipFloor = 0;
 function placeChips(c, sx0, sy0, ph, t){
+  if (mob()) { const a = chaps[clamp(Math.round(c), 0, chaps.length - 1)]; chipFloor = innerHeight - a.offsetHeight - 28 - 8; } else chipFloor = 0;
   chipEls.forEach((pair,k)=>{
-    const d = c - k, o = Math.max(0, Math.min(1, 1 - Math.abs(d) * 2.4));
+    const d = c - k, o = mob() ? Math.max(0, Math.min(1, 1 - Math.max(0, Math.abs(d) - .22) * 3.8)) : Math.max(0, Math.min(1, 1 - Math.abs(d) * 2.4));
     pair.forEach((el,j)=>{
       const off = CHIP_OFF[j];
       const fl = reduce ? 0 : Math.sin(t*1.1 + j*2 + k) * 6;
-      let x = sx0 + off[0] * ph * .55 + (off[0] < 0 ? -el.offsetWidth : 0);
+      let x = sx0 + off[0] * ph * .55 + (off[0] < 0 ? -el._w : 0);
       let y = sy0 + off[1] * ph + fl - d * 60 * (j % 2 ? 1 : -1);
-      x = Math.max(12, Math.min(innerWidth - el.offsetWidth - 12, x));
-      y = Math.max(80, Math.min(innerHeight - el.offsetHeight - 12, y));
+      x = Math.max(12, Math.min(innerWidth - el._w - 12, x));
+      y = Math.max(80, Math.min((chipFloor || innerHeight) - el._h - 12, y));
       el.style.opacity = o;
       el.style.pointerEvents = o > .5 ? 'auto' : 'none';
       el.tabIndex = o > .5 ? 0 : -1;
@@ -889,7 +907,7 @@ function updateChapters(p){
   const c = p * N_CH;
   chaps.forEach((el,k)=>{
     const d = c - k;
-    const o = clamp(1 - Math.abs(d) * 2.2, 0, 1);
+    const o = mob() ? clamp(1 - Math.max(0, Math.abs(d) - .22) * 3.6, 0, 1) : clamp(1 - Math.abs(d) * 2.2, 0, 1);
     el.style.opacity = o;
     el.style.visibility = o < 0.01 ? 'hidden' : 'visible';
     el.classList.toggle('in', o > .45);
@@ -905,9 +923,10 @@ if (!window.THREE) { document.documentElement.classList.add('no-webgl'); chaps.f
 /* ---------- three.js scene ---------- */
 const canvas = document.getElementById('scene');
 let renderer;
-try { renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false}); }
+const LOW = matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+try { renderer = new THREE.WebGLRenderer({canvas, antialias:!LOW, alpha:false, powerPreference:LOW?'low-power':'high-performance'}); }
 catch(e){ document.documentElement.classList.add('no-webgl'); chaps.forEach(e=>e.classList.add('in')); updateChapters(0); return; }
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(devicePixelRatio, LOW ? 1.5 : 2));
 renderer.outputEncoding = THREE.sRGBEncoding;
 const scene = new THREE.Scene();
 const BG = new THREE.Color('#ffffff');
@@ -964,8 +983,8 @@ class Rail extends THREE.Curve{
 }
 function buildLadder(P, litUpTo){
   railA.geometry.dispose(); railB.geometry.dispose();
-  railA.geometry = new THREE.TubeGeometry(new Rail(P, 1), 140, .07, 8, false);
-  railB.geometry = new THREE.TubeGeometry(new Rail(P,-1), 140, .07, 8, false);
+  railA.geometry = new THREE.TubeGeometry(new Rail(P, 1), LOW ? 70 : 140, .07, LOW ? 6 : 8, false);
+  railB.geometry = new THREE.TubeGeometry(new Rail(P,-1), LOW ? 70 : 140, .07, LOW ? 6 : 8, false);
   for (let i=0;i<RUNGS;i++){
     const s = (i + .5) / RUNGS;
     const a = railPoint(s, P, 1), b = railPoint(s, P, -1);
@@ -1022,7 +1041,7 @@ const shadow = new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTe
 shadow.scale.set(3.4,.7,1); world.add(shadow);
 
 /* particles */
-const PN = 900, pp = new Float32Array(PN*3);
+const PN = LOW ? 300 : 900, pp = new Float32Array(PN*3);
 for (let i=0;i<PN;i++){ pp[i*3]=(Math.random()-.5)*30; pp[i*3+1]=(Math.random()-.5)*34; pp[i*3+2]=-Math.random()*16-2; }
 const pg = new THREE.BufferGeometry(); pg.setAttribute('position', new THREE.BufferAttribute(pp,3));
 const dots = new THREE.Points(pg, new THREE.PointsMaterial({color:'#0E8C7F', size:.045, transparent:true, opacity:.35, depthWrite:false}));
@@ -1151,8 +1170,9 @@ function drawScreen(c){
 }
 
 /* ---------- loop ---------- */
-let target = stageProgress(), p = target, lastBuilt = -1, lastScreen = -1;
-addEventListener('scroll', ()=>{ target = stageProgress(); }, {passive:true});
+let target = stageProgress(), p = target, lastBuilt = -1, lastScreen = -1, lastSway = 0, stageVisible = true;
+addEventListener('scroll', ()=>{ target = stageProgress(); wake(); }, {passive:true});
+addEventListener('resize', ()=>chipEls.flat().forEach(d=>{ d._w = d.offsetWidth; d._h = d.offsetHeight; }));
 function resize(){
   const w = canvas.clientWidth, h = canvas.clientHeight;
   renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
@@ -1170,7 +1190,7 @@ function frame(){
   const P = ladderParams(p, t);
   const climb = ease(p);
   const lit = .12 + climb * .78;
-  if (Math.abs(p - lastBuilt) > .0008 || !reduce) { buildLadder(P, lit); lastBuilt = p; }
+  if (Math.abs(p - lastBuilt) > .0008 || (!reduce && !LOW && t - lastSway > .1)) { buildLadder(P, lit); lastBuilt = p; lastSway = t; }
 
   // phone climbs the ladder
   const s = .2 + climb * .62;
@@ -1209,9 +1229,13 @@ function frame(){
   const phPx = Math.abs(((-top.y * .5 + .5) * innerHeight) - sy0) * 2;
   placeChips(Math.min(c, N_CH), sx0, sy0, phPx, t);
   renderer.render(scene, camera);
-  requestAnimationFrame(frame);
+  if (stageVisible) requestAnimationFrame(frame); else running = false;
 }
-const go = () => { drawScreen(0); requestAnimationFrame(frame); };
+let running = false;
+function wake(){ if (!running && stageVisible) { running = true; clock.getDelta(); requestAnimationFrame(frame); } }
+if ('IntersectionObserver' in window) new IntersectionObserver(es => { stageVisible = es[0].isIntersecting; wake(); }, {rootMargin:'100px'}).observe(stage);
+document.addEventListener('visibilitychange', () => { stageVisible = !document.hidden && stage.getBoundingClientRect().bottom > 0; wake(); });
+const go = () => { drawScreen(0); running = true; requestAnimationFrame(frame); };
 (document.fonts && document.fonts.ready) ? document.fonts.ready.then(go) : go();
 document.fonts && document.fonts.addEventListener && document.fonts.addEventListener('loadingdone', ()=>{ lastScreen = -1; });
 })();
